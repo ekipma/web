@@ -1,9 +1,12 @@
 import "server-only";
 
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 const apiBaseUrl = process.env.EKIPMA_API_URL ?? "http://127.0.0.1:8086";
 const apiVersion = "v0.8.1";
+const accessCookie = "ekipma_admin_access";
+const refreshCookie = "ekipma_admin_refresh";
 
 export type AdminUser = {
   id: string;
@@ -51,6 +54,10 @@ export function adminApiUrl(path: string) {
   return `${apiBaseUrl}/api/v1/admin${path}`;
 }
 
+function authApiUrl(path: string) {
+  return `${apiBaseUrl}/api/v1/auth${path}`;
+}
+
 export async function adminFetch(path: string, token: string) {
   return fetch(adminApiUrl(path), {
     headers: { Authorization: `Bearer ${token}`, "X-Version": apiVersion },
@@ -58,8 +65,56 @@ export async function adminFetch(path: string, token: string) {
   });
 }
 
+type AuthPair = { accessToken: string; refreshToken: string };
+
+export function setAdminAuthCookies(response: NextResponse, auth: AuthPair) {
+  const secure = process.env.NODE_ENV === "production";
+  response.cookies.set(accessCookie, auth.accessToken, { httpOnly: true, sameSite: "lax", secure, path: "/", maxAge: 60 * 30 });
+  response.cookies.set(refreshCookie, auth.refreshToken, { httpOnly: true, sameSite: "lax", secure, path: "/api/admin", maxAge: 60 * 60 * 24 * 30 });
+}
+
+export function clearAdminAuthCookies(response: NextResponse) {
+  response.cookies.set(accessCookie, "", { httpOnly: true, sameSite: "lax", path: "/", maxAge: 0 });
+  response.cookies.set(refreshCookie, "", { httpOnly: true, sameSite: "lax", path: "/api/admin", maxAge: 0 });
+}
+
+export async function refreshAdminAuth(refreshToken: string): Promise<AuthPair | null> {
+  const refreshed = await fetch(authApiUrl("/refresh"), {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Version": apiVersion },
+    body: JSON.stringify({ refreshToken }),
+    cache: "no-store",
+  }).catch(() => null);
+  if (!refreshed?.ok) return null;
+  const auth = await refreshed.json().catch(() => null) as AuthPair | null;
+  if (!auth?.accessToken || !auth.refreshToken) return null;
+  const admin = await adminFetch("/me", auth.accessToken);
+  return admin.ok ? auth : null;
+}
+
+export async function adminProxy(path: string, fallbackError: string) {
+  const jar = await cookies();
+  let accessToken = jar.get(accessCookie)?.value;
+  let upstream = accessToken ? await adminFetch(path, accessToken) : null;
+  let refreshed: AuthPair | null = null;
+  if (!upstream || upstream.status === 401) {
+    const refreshToken = jar.get(refreshCookie)?.value;
+    refreshed = refreshToken ? await refreshAdminAuth(refreshToken) : null;
+    if (refreshed) {
+      accessToken = refreshed.accessToken;
+      upstream = await adminFetch(path, accessToken);
+    }
+  }
+
+  const data = await upstream?.json().catch(() => ({ error: fallbackError })) ?? { error: "Unauthenticated" };
+  const response = NextResponse.json(data, { status: upstream?.status ?? 401 });
+  if (refreshed && upstream?.status !== 401) setAdminAuthCookies(response, refreshed);
+  if (!upstream || upstream.status === 401) clearAdminAuthCookies(response);
+  return response;
+}
+
 export async function getAdminSession(): Promise<{ user: AdminUser; token: string } | null> {
-  const token = (await cookies()).get("ekipma_admin_access")?.value;
+  const token = (await cookies()).get(accessCookie)?.value;
   if (!token) return null;
   const response = await adminFetch("/me", token);
   if (!response.ok) return null;

@@ -4,7 +4,7 @@ import { getAdminSession } from "@/lib/admin-api";
 
 export default async function ProtectedAdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getAdminSession();
-  if (!session) redirect("/admin/login");
+  if (!session) redirect("/api/admin/refresh?next=/admin");
 
   return <AdminShell currentUser={session.user}>{children}</AdminShell>;
 }

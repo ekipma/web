@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminFetch } from "@/lib/admin-api";
+import { adminFetch, setAdminAuthCookies } from "@/lib/admin-api";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null) as { mobile?: string; password?: string } | null;
@@ -11,10 +11,10 @@ export async function POST(request: Request) {
     cache: "no-store",
   }).catch(() => null);
   if (!login?.ok) return NextResponse.json({ error: "We couldn’t sign you in with those details." }, { status: login?.status ?? 503 });
-  const data = await login.json() as { auth: { accessToken: string } };
+  const data = await login.json() as { auth: { accessToken: string; refreshToken: string } };
   const admin = await adminFetch("/me", data.auth.accessToken);
   if (!admin.ok) return NextResponse.json({ error: "This account is not an Ekipma administrator." }, { status: 403 });
   const response = NextResponse.json({ user: await admin.json() });
-  response.cookies.set("ekipma_admin_access", data.auth.accessToken, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 30 });
+  setAdminAuthCookies(response, data.auth);
   return response;
 }
