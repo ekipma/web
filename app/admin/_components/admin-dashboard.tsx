@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -205,19 +205,44 @@ export function AdminShell({ currentUser, children }: { currentUser: AdminUser; 
   const pathname = usePathname();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const activeItem = navigation.find((item) => item.href === pathname) ?? navigation[0];
   const initials = currentUser.name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "AD";
+  const searchResults = navigation.filter((item) => item.label.toLowerCase().includes(searchQuery.trim().toLowerCase()));
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  function openSearch() {
+    setSearchQuery("");
+    setSearchOpen(true);
+  }
+
+  function selectSearchResult(href: string) {
+    setSearchOpen(false);
+    router.push(href);
+  }
 
   const navItems = (mobile = false) => <nav className={mobile ? "admin-mobile-nav-list" : "admin-nav-list"} aria-label="Admin sections">{navigation.map((item) => { const Icon = item.icon; return <Link key={item.label} href={item.href} className={activeItem.label === item.label ? "is-active" : ""} onClick={() => setMobileNavOpen(false)}><Icon /><span>{item.label}</span>{item.label === "Audit log" && <Badge variant="outline">Soon</Badge>}</Link>; })}</nav>;
 
   return <div className="admin-app">
-    <aside className="admin-sidebar"><Link className="admin-brand" href="/admin" aria-label="Ekipma admin home"><Image src="/images/app-logo.svg" width={30} height={30} alt="" /><span>ekipma<span>.</span></span><em>ADMIN</em></Link><div className="admin-workspace"><span>WORKSPACE</span><button><span className="admin-workspace-mark">E</span><strong>Ekipma</strong><ChevronsUpDown /></button></div>{navItems()}<div className="admin-sidebar-bottom"><a href="/" target="_blank"><PanelLeft /> View landing <ArrowUpRight /></a><button><LifeBuoy /> Help & docs</button><div className="admin-account"><span className="admin-owner-avatar">{initials}</span><div><strong>{currentUser.name}</strong><span>Administrator</span></div><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Open account menu"><Ellipsis /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuLabel>Administrator account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem><Settings2 /> Preferences</DropdownMenuItem><DropdownMenuItem onClick={async () => { await fetch("/api/admin/logout", { method: "POST" }); router.replace("/admin/login"); router.refresh(); }}><LogOut /> Sign out</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div></aside>
-    <main className="admin-main"><header className="admin-topbar"><div className="admin-topbar-left"><Button className="admin-mobile-menu" variant="ghost" size="icon" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}><Menu /></Button><div className="admin-breadcrumb"><span>Admin</span><ChevronDown /><strong>{activeItem?.label}</strong></div></div><div className="admin-topbar-actions"><button className="admin-command-button" onClick={() => setNoticeOpen(true)}><Search /><span>Search</span><kbd>⌘ K</kbd></button><Button size="icon" variant="ghost" aria-label="Notifications"><Bell /></Button><span className="admin-topbar-avatar">HG</span></div></header>
+    <aside className="admin-sidebar"><Link className="admin-brand" href="/admin" aria-label="Ekipma admin home"><Image src="/images/app-logo.svg" width={30} height={30} alt="" /><span>ekipma<span>.</span></span><em>ADMIN</em></Link><div className="admin-workspace"><span>WORKSPACE</span><button><span className="admin-workspace-mark">E</span><strong>Ekipma</strong><ChevronsUpDown /></button></div>{navItems()}<div className="admin-sidebar-bottom"><a href="/" target="_blank"><PanelLeft /><span>View landing</span><ArrowUpRight /></a><button><LifeBuoy /> Help & docs</button><div className="admin-account"><span className="admin-owner-avatar">{initials}</span><div><strong>{currentUser.name}</strong><span>Administrator</span></div><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Open account menu"><Ellipsis /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuLabel>Administrator account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem><Settings2 /> Preferences</DropdownMenuItem><DropdownMenuItem onClick={async () => { await fetch("/api/admin/logout", { method: "POST" }); router.replace("/admin/login"); router.refresh(); }}><LogOut /> Sign out</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div></aside>
+    <main className="admin-main"><header className="admin-topbar"><div className="admin-topbar-left"><Button className="admin-mobile-menu" variant="ghost" size="icon" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}><Menu /></Button><div className="admin-breadcrumb"><strong>{activeItem?.label}</strong></div></div><div className="admin-topbar-actions"><button className="admin-command-button" onClick={openSearch}><Search /><span>Search</span><kbd>⌘ K</kbd></button><Button size="icon" variant="ghost" aria-label="Notifications"><Bell /></Button><span className="admin-topbar-avatar">HG</span></div></header>
       <div className="admin-local-notice"><Sparkles /><span><strong>Protected admin session.</strong> Overview, user, group, and system data are live.</span><button onClick={() => setNoticeOpen(true)}>Data notes <ArrowUpRight /></button></div>
       <div className="admin-content">{children}</div>
     </main>
     {mobileNavOpen && <div className="admin-mobile-nav"><div className="admin-mobile-nav-head"><Link className="admin-brand" href="/admin"><Image src="/images/app-logo.svg" width={30} height={30} alt="" /><span>ekipma<span>.</span></span><em>ADMIN</em></Link><Button size="icon" variant="ghost" onClick={() => setMobileNavOpen(false)} aria-label="Close navigation"><X /></Button></div>{navItems(true)}</div>}
     <Dialog open={noticeOpen} onOpenChange={setNoticeOpen}><DialogContent><DialogHeader><DialogTitle>Live data notes</DialogTitle><DialogDescription>This dashboard reads protected operational summaries from Ekipma’s API.</DialogDescription></DialogHeader><div className="admin-dialog-points"><div><CheckCircle2 /> Recent activity excludes private records and record descriptions.</div><div><CheckCircle2 /> Multi-assignee records are deduplicated in the activity feed.</div><div><CheckCircle2 /> Membership changes remain read-only until an audited entitlement workflow is added.</div></div><DialogFooter><Button onClick={() => setNoticeOpen(false)}>Got it</Button></DialogFooter></DialogContent></Dialog>
+    <Dialog open={searchOpen} onOpenChange={setSearchOpen}><DialogContent><DialogHeader><DialogTitle>Search admin</DialogTitle><DialogDescription>Find an area of the operations console.</DialogDescription></DialogHeader><div className="admin-command-search"><Search /><Input autoFocus value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search sections…" aria-label="Search admin sections" /></div><div className="admin-command-results">{searchResults.length ? searchResults.map((item) => { const Icon = item.icon; return <button key={item.href} onClick={() => selectSearchResult(item.href)}><span><Icon />{item.label}</span><ArrowUpRight /></button>; }) : <p>No admin sections match “{searchQuery}”.</p>}</div></DialogContent></Dialog>
   </div>;
 }
 
