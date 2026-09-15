@@ -28,6 +28,13 @@ export type AdminOverview = {
   collaborationChart: { start: string; value: number }[];
   recentActivity: { id: string; title: string; type: "expense" | "turn" | "plan"; groupId: string; groupName: string; createdAt: string }[];
 };
+export type AdminActivity = {
+  id: string; createdAt: string; type: "expense" | "turn" | "plan"; title: string; private: boolean;
+  groupId: string; groupName: string; authorId: string; authorName: string; assigneeId: string; assigneeName: string;
+  amount?: number; turn?: number; dueAt?: string;
+};
+export type AdminActivityPage = { activity: AdminActivity[]; total: number; offset: number; limit: number };
+export type AdminMembershipPage = { memberships: AdminUser[]; total: number; active: number; expiring: number; expired: number; god: number; offset: number; limit: number };
 export type AdminSystem = {
   api: { status: string };
   database: { status: string; latencyMs: number };
@@ -71,6 +78,16 @@ export async function getAdminGroups(token: string): Promise<AdminGroupPage | nu
 
 export async function getAdminOverview(token: string, days = 30): Promise<AdminOverview | null> {
   const response = await adminFetch(`/overview?days=${days}`, token);
+  return response.ok ? response.json() : null;
+}
+
+export async function getAdminActivity(token: string): Promise<AdminActivityPage | null> {
+  const response = await adminFetch("/activity?limit=50", token);
+  return response.ok ? response.json() : null;
+}
+
+export async function getAdminMemberships(token: string): Promise<AdminMembershipPage | null> {
+  const response = await adminFetch("/memberships?limit=50", token);
   return response.ok ? response.json() : null;
 }
 

@@ -14,10 +14,12 @@ import {
   ChevronsUpDown,
   Clock3,
   CreditCard,
+  Crown,
   Cpu,
   Database,
   Download,
   Ellipsis,
+  EyeOff,
   FolderKanban,
   Gauge,
   Gem,
@@ -36,6 +38,7 @@ import {
   ShieldCheck,
   Sparkles,
   RefreshCw,
+  ReceiptText,
   UserRound,
   UsersRound,
   X,
@@ -46,7 +49,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import type { AdminGroup, AdminOverview, AdminSystem, AdminUser } from "@/lib/admin-api";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { AdminActivityPage, AdminGroup, AdminMembershipPage, AdminOverview, AdminSystem, AdminUser } from "@/lib/admin-api";
 
 type Section = "Overview" | "Users" | "Groups" | "Activity" | "Memberships" | "System" | "Audit log";
 type User = { id: string; initials: string; name: string; email: string; phone: string; joined: string; plan: "Premium" | "Free"; role: number; status: "Active"; groups: number; color: string };
@@ -99,6 +103,49 @@ function GroupsTable({ groups, total }: { groups: AdminGroup[]; total: number })
   return <section className="admin-groups-section"><div className="admin-page-heading"><div><div className="admin-section-kicker">COLLABORATION</div><h1>Groups</h1><p>See where people organize expenses, turns, and plans.</p></div></div><Card><CardHeader className="admin-table-header"><div><CardTitle>All groups</CardTitle><CardDescription>Showing {groups.length.toLocaleString()} of {total.toLocaleString()} · newest first</CardDescription></div><div className="admin-search"><Search /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search group, description, or owner" aria-label="Search groups" /></div></CardHeader><CardContent className="admin-table-wrap"><table className="admin-table admin-groups-table"><thead><tr><th>Group</th><th>Owner</th><th>Members</th><th>Visibility</th><th>Created</th></tr></thead><tbody>{filtered.map((group) => <tr key={group.id}><td><div className="admin-person"><GroupMark group={group} /><div><strong>{group.name}</strong><span>{group.description || "No description"}</span></div></div></td><td><strong className="admin-table-primary">{group.adminName || `User ${group.adminId}`}</strong></td><td><span className="admin-member-count"><UsersRound /> {group.memberCount}</span></td><td><Badge variant={group.public ? "success" : "outline"}>{group.public ? <Globe2 /> : <LockKeyhole />}{group.public ? "Public" : "Private"}</Badge></td><td>{new Date(group.createdAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</td></tr>)}</tbody></table>{filtered.length === 0 && <div className="admin-no-results">No groups match “{query}”.</div>}</CardContent></Card></section>;
 }
 
+function activityDetail(item: AdminActivityPage["activity"][number]) {
+  if (item.type === "expense") return item.amount ? `Amount ${item.amount.toLocaleString()}` : "Expense recorded";
+  if (item.type === "turn") return `Rotation ${item.turn || 1}`;
+  return item.dueAt ? `Due ${new Date(item.dueAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}` : "Plan created";
+}
+
+function ActivityPanel({ initial }: { initial: AdminActivityPage | null }) {
+  const [page, setPage] = useState(initial);
+  const [kind, setKind] = useState("all");
+  const [pending, setPending] = useState(false);
+  async function changeKind(value: string) {
+    setKind(value); setPending(true);
+    const response = await fetch(`/api/admin/activity?limit=50&type=${value}`, { cache: "no-store" });
+    if (response.ok) setPage(await response.json());
+    setPending(false);
+  }
+  const icons = { expense: CreditCard, turn: CheckCircle2, plan: CalendarDays };
+  return <section className="admin-activity-section"><div className="admin-page-heading"><div><div className="admin-section-kicker">PRODUCT ACTIVITY</div><h1>Activity</h1><p>Recent product events with private titles redacted.</p></div><Button variant="outline" onClick={() => changeKind(kind)} disabled={pending}><RefreshCw className={pending ? "is-spinning" : ""} /> Refresh</Button></div><Tabs value={kind} onValueChange={changeKind}><TabsList><TabsTrigger value="all">All</TabsTrigger><TabsTrigger value="expense">Expenses</TabsTrigger><TabsTrigger value="turn">Turns</TabsTrigger><TabsTrigger value="plan">Plans</TabsTrigger></TabsList></Tabs><Card><CardHeader><div><CardTitle>Recent events</CardTitle><CardDescription>Showing {page?.activity.length ?? 0} of {page?.total ?? 0} records · newest first</CardDescription></div></CardHeader><CardContent className="admin-table-wrap"><table className="admin-table admin-activity-table"><thead><tr><th>Event</th><th>Group</th><th>People</th><th>Details</th><th>Created</th></tr></thead><tbody>{page?.activity.map((item) => { const Icon = icons[item.type]; return <tr key={item.id}><td><div className="admin-activity-person"><span className={`admin-event-icon admin-event-${item.type === "expense" ? "pay" : item.type}`}><Icon /></span><div><strong>{item.title}</strong><span>{item.private ? <><EyeOff /> Private title hidden</> : item.type}</span></div></div></td><td>{item.groupName || "Personal"}</td><td><div className="admin-activity-people"><strong>{item.authorName || `User ${item.authorId}`}</strong><span>to {item.assigneeName || `User ${item.assigneeId}`}</span></div></td><td>{activityDetail(item)}</td><td>{relativeTime(item.createdAt)} ago</td></tr>; })}</tbody></table>{!page?.activity.length && <div className="admin-no-results">No activity found for this filter.</div>}</CardContent></Card></section>;
+}
+
+function membershipStatus(user: AdminUser) {
+  if (user.plan.type === "UserPlanNormal") return { label: "Free", tone: "outline" as const };
+  if (!user.plan.expiresAt || new Date(user.plan.expiresAt).getTime() <= Date.now()) return { label: "Expired", tone: "warning" as const };
+  if (new Date(user.plan.expiresAt).getTime() <= Date.now() + 7 * 86400000) return { label: "Expiring", tone: "warning" as const };
+  return { label: "Active", tone: "success" as const };
+}
+
+function MembershipsPanel({ initial }: { initial: AdminMembershipPage | null }) {
+  const [page, setPage] = useState(initial);
+  const [status, setStatus] = useState("all");
+  const [query, setQuery] = useState("");
+  const [pending, setPending] = useState(false);
+  async function load(nextStatus = status) {
+    setStatus(nextStatus); setPending(true);
+    const params = new URLSearchParams({ limit: "50", status: nextStatus });
+    if (query.trim()) params.set("q", query.trim());
+    const response = await fetch(`/api/admin/memberships?${params}`, { cache: "no-store" });
+    if (response.ok) setPage(await response.json());
+    setPending(false);
+  }
+  return <section className="admin-memberships-section"><div className="admin-page-heading"><div><div className="admin-section-kicker">ACCESS & PLANS</div><h1>Memberships</h1><p>Review current Premium access and upcoming expirations.</p></div></div><div className="admin-membership-metrics"><MetricCard label="Active Premium" value={(page?.active ?? 0).toLocaleString()} trend="Live" detail="Premium and God" icon={Gem} color="violet" up /><MetricCard label="Expiring soon" value={(page?.expiring ?? 0).toLocaleString()} trend="7 days" detail="needs attention" icon={Clock3} color="amber" up /><MetricCard label="Expired" value={(page?.expired ?? 0).toLocaleString()} trend="Live" detail="historical access" icon={ReceiptText} color="cyan" up /><MetricCard label="God plans" value={(page?.god ?? 0).toLocaleString()} trend="Live" detail="currently active" icon={Crown} color="green" up /></div><Card aria-busy={pending}><CardHeader className="admin-memberships-head"><Tabs value={status} onValueChange={load}><TabsList><TabsTrigger value="all" disabled={pending}>All</TabsTrigger><TabsTrigger value="active" disabled={pending}>Active</TabsTrigger><TabsTrigger value="expiring" disabled={pending}>Expiring</TabsTrigger><TabsTrigger value="expired" disabled={pending}>Expired</TabsTrigger></TabsList></Tabs><form className="admin-search" onSubmit={(event) => { event.preventDefault(); load(); }}><Search /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search name, mobile, or email" aria-label="Search memberships" disabled={pending} /></form></CardHeader><CardContent className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Person</th><th>Plan</th><th>Status</th><th>Expires</th><th>Role</th></tr></thead><tbody>{page?.memberships.map((user, index) => { const state = membershipStatus(user); const person = toDashboardUser(user, index); return <tr key={user.id}><td><div className="admin-person"><Avatar user={person} /><div><strong>{user.name || "Unnamed user"}</strong><span>{user.email || user.mobile}</span></div></div></td><td><Badge variant={user.plan.type === "UserPlanGod" ? "secondary" : "outline"}>{user.plan.type === "UserPlanGod" ? "God" : user.plan.type === "UserPlanPremium" ? "Premium" : "Free"}</Badge></td><td><Badge variant={state.tone}><i className="admin-status-dot" />{state.label}</Badge></td><td>{user.plan.expiresAt ? new Date(user.plan.expiresAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" }) : "Never"}</td><td>{user.role === 3 ? "Admin" : user.role === 2 ? "Operator" : "Member"}</td></tr>; })}</tbody></table>{!page?.memberships.length && <div className="admin-no-results">No memberships match this filter.</div>}</CardContent></Card></section>;
+}
+
 function formatBytes(bytes: number) {
   if (!Number.isFinite(bytes) || bytes <= 0) return "—";
   const units = ["B", "KB", "MB", "GB", "TB"];
@@ -148,7 +195,7 @@ function SystemPanel({ initial }: { initial: AdminSystem | null }) {
   </section>;
 }
 
-export function AdminDashboard({ currentUser, initialUsers, totalUsers, initialGroups, totalGroups, newGroupsLast30Days, initialOverview, initialSystem }: { currentUser: AdminUser; initialUsers: AdminUser[]; totalUsers: number; initialGroups: AdminGroup[]; totalGroups: number; newGroupsLast30Days: number; initialOverview: AdminOverview | null; initialSystem: AdminSystem | null }) {
+export function AdminDashboard({ currentUser, initialUsers, totalUsers, initialGroups, totalGroups, newGroupsLast30Days, initialOverview, initialActivity, initialMemberships, initialSystem }: { currentUser: AdminUser; initialUsers: AdminUser[]; totalUsers: number; initialGroups: AdminGroup[]; totalGroups: number; newGroupsLast30Days: number; initialOverview: AdminOverview | null; initialActivity: AdminActivityPage | null; initialMemberships: AdminMembershipPage | null; initialSystem: AdminSystem | null }) {
   const router = useRouter();
   const users = initialUsers.map(toDashboardUser);
   const [section, setSection] = useState<Section>("Overview");
@@ -162,7 +209,7 @@ export function AdminDashboard({ currentUser, initialUsers, totalUsers, initialG
     <aside className="admin-sidebar"><a className="admin-brand" href="/admin" aria-label="Ekipma admin home"><Image src="/images/app-logo.svg" width={30} height={30} alt="" /><span>ekipma<span>.</span></span><em>ADMIN</em></a><div className="admin-workspace"><span>WORKSPACE</span><button><span className="admin-workspace-mark">E</span><strong>Ekipma</strong><ChevronsUpDown /></button></div>{navItems()}<div className="admin-sidebar-bottom"><a href="/" target="_blank"><PanelLeft /> View landing <ArrowUpRight /></a><button><LifeBuoy /> Help & docs</button><div className="admin-account"><span className="admin-owner-avatar">{users.find((user) => user.id === currentUser.id)?.initials || "AD"}</span><div><strong>{currentUser.name}</strong><span>Administrator</span></div><DropdownMenu><DropdownMenuTrigger asChild><Button size="icon" variant="ghost" aria-label="Open account menu"><Ellipsis /></Button></DropdownMenuTrigger><DropdownMenuContent align="end"><DropdownMenuLabel>Administrator account</DropdownMenuLabel><DropdownMenuSeparator /><DropdownMenuItem><Settings2 /> Preferences</DropdownMenuItem><DropdownMenuItem onClick={async () => { await fetch("/api/admin/logout", { method: "POST" }); router.replace("/admin"); router.refresh(); }}><LogOut /> Sign out</DropdownMenuItem></DropdownMenuContent></DropdownMenu></div></div></aside>
     <main className="admin-main"><header className="admin-topbar"><div className="admin-topbar-left"><Button className="admin-mobile-menu" variant="ghost" size="icon" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}><Menu /></Button><div className="admin-breadcrumb"><span>Admin</span><ChevronDown /><strong>{activeItem?.label}</strong></div></div><div className="admin-topbar-actions"><button className="admin-command-button" onClick={() => setNoticeOpen(true)}><Search /><span>Search</span><kbd>⌘ K</kbd></button><Button size="icon" variant="ghost" aria-label="Notifications"><Bell /></Button><span className="admin-topbar-avatar">HG</span></div></header>
       <div className="admin-local-notice"><Sparkles /><span><strong>Protected admin session.</strong> Overview, user, group, and system data are live.</span><button onClick={() => setNoticeOpen(true)}>Data notes <ArrowUpRight /></button></div>
-      <div className="admin-content">{section === "Overview" ? <Overview overview={initialOverview} navigate={setSection} adminName={currentUser.name} users={users} total={totalUsers} groups={initialGroups} newGroups={newGroupsLast30Days} system={initialSystem} /> : section === "Users" ? <UsersTable users={users} total={totalUsers} /> : section === "Groups" ? <GroupsTable groups={initialGroups} total={totalGroups} /> : section === "System" ? <SystemPanel initial={initialSystem} /> : <EmptySection name={section} />}</div>
+      <div className="admin-content">{section === "Overview" ? <Overview overview={initialOverview} navigate={setSection} adminName={currentUser.name} users={users} total={totalUsers} groups={initialGroups} newGroups={newGroupsLast30Days} system={initialSystem} /> : section === "Users" ? <UsersTable users={users} total={totalUsers} /> : section === "Groups" ? <GroupsTable groups={initialGroups} total={totalGroups} /> : section === "Activity" ? <ActivityPanel initial={initialActivity} /> : section === "Memberships" ? <MembershipsPanel initial={initialMemberships} /> : section === "System" ? <SystemPanel initial={initialSystem} /> : <EmptySection name={section} />}</div>
     </main>
     {mobileNavOpen && <div className="admin-mobile-nav"><div className="admin-mobile-nav-head"><a className="admin-brand" href="/admin"><Image src="/images/app-logo.svg" width={30} height={30} alt="" /><span>ekipma<span>.</span></span><em>ADMIN</em></a><Button size="icon" variant="ghost" onClick={() => setMobileNavOpen(false)} aria-label="Close navigation"><X /></Button></div>{navItems(true)}</div>}
     <Dialog open={noticeOpen} onOpenChange={setNoticeOpen}><DialogContent><DialogHeader><DialogTitle>Live data notes</DialogTitle><DialogDescription>This dashboard reads protected operational summaries from Ekipma’s API.</DialogDescription></DialogHeader><div className="admin-dialog-points"><div><CheckCircle2 /> Recent activity excludes private records and record descriptions.</div><div><CheckCircle2 /> Multi-assignee records are deduplicated in the activity feed.</div><div><CheckCircle2 /> Membership changes remain read-only until an audited entitlement workflow is added.</div></div><DialogFooter><Button onClick={() => setNoticeOpen(false)}>Got it</Button></DialogFooter></DialogContent></Dialog>
