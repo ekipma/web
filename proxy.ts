@@ -5,7 +5,8 @@ const localeCookie = "ekipma_locale";
 
 function countryLocale(request: NextRequest): Locale {
   const country = request.headers.get("x-vercel-ip-country") ?? request.headers.get("cf-ipcountry");
-  return country?.toUpperCase() === "IR" ? "fa" : "en";
+  if (!country || country.toUpperCase() === "XX") return "fa";
+  return country.toUpperCase() === "IR" ? "fa" : "en";
 }
 
 export function proxy(request: NextRequest) {
