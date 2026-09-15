@@ -21,20 +21,48 @@ export type AdminUser = {
 
 export type AdminUserPage = { users: AdminUser[]; total: number; offset: number; limit: number };
 export type AdminGroup = {
-  id: string; createdAt: string; name: string; description: string; public: boolean;
-  photoUrl: string; adminId: string; adminName: string; memberCount: number;
+  id: string;
+  createdAt: string;
+  name: string;
+  description: string;
+  public: boolean;
+  photoUrl: string;
+  adminId: string;
+  adminName: string;
+  memberCount: number;
 };
 export type AdminGroupPage = { groups: AdminGroup[]; total: number; newLast30Days: number; offset: number; limit: number };
 export type AdminOverview = {
-  periodDays: number; activePremium: number; premiumExpiringSevenDays: number; expiredPremium: number; godPlans: number;
-  activeGroups: number; previousActiveGroups: number; records: number; expenses: number; turns: number; plans: number; turnGroups: number;
+  periodDays: number;
+  activePremium: number;
+  premiumExpiringSevenDays: number;
+  expiredPremium: number;
+  godPlans: number;
+  activeGroups: number;
+  previousActiveGroups: number;
+  records: number;
+  expenses: number;
+  turns: number;
+  plans: number;
+  turnGroups: number;
   collaborationChart: { start: string; value: number }[];
   recentActivity: { id: string; title: string; type: "expense" | "turn" | "plan"; groupId: string; groupName: string; createdAt: string }[];
 };
 export type AdminActivity = {
-  id: string; createdAt: string; type: "expense" | "turn" | "plan"; title: string; private: boolean;
-  groupId: string; groupName: string; authorId: string; authorName: string; assigneeId: string; assigneeName: string;
-  amount?: number; turn?: number; dueAt?: string;
+  id: string;
+  createdAt: string;
+  type: "expense" | "turn" | "plan";
+  title: string;
+  private: boolean;
+  groupId: string;
+  groupName: string;
+  authorId: string;
+  authorName: string;
+  assigneeId: string;
+  assigneeName: string;
+  amount?: number;
+  turn?: number;
+  dueAt?: string;
 };
 export type AdminActivityPage = { activity: AdminActivity[]; total: number; offset: number; limit: number };
 export type AdminMembershipPage = { memberships: AdminUser[]; total: number; active: number; expiring: number; expired: number; god: number; offset: number; limit: number };
@@ -42,8 +70,14 @@ export type AdminSystem = {
   api: { status: string };
   database: { status: string; latencyMs: number };
   system: {
-    collectedAt: string; hostname: string; os: string; arch: string; goVersion: string;
-    uptimeSeconds: number; processUptimeSeconds: number; goroutines: number;
+    collectedAt: string;
+    hostname: string;
+    os: string;
+    arch: string;
+    goVersion: string;
+    uptimeSeconds: number;
+    processUptimeSeconds: number;
+    goroutines: number;
     cpu: { cores: number; usagePercent: number };
     memory: { totalBytes: number; usedBytes: number; processBytes: number; usagePercent: number };
     disk: { path: string; totalBytes: number; usedBytes: number; usagePercent: number };
@@ -86,7 +120,7 @@ export async function refreshAdminAuth(refreshToken: string): Promise<AuthPair |
     cache: "no-store",
   }).catch(() => null);
   if (!refreshed?.ok) return null;
-  const auth = await refreshed.json().catch(() => null) as AuthPair | null;
+  const auth = (await refreshed.json().catch(() => null)) as AuthPair | null;
   if (!auth?.accessToken || !auth.refreshToken) return null;
   const admin = await adminFetch("/me", auth.accessToken);
   return admin.ok ? auth : null;
@@ -106,7 +140,7 @@ export async function adminProxy(path: string, fallbackError: string) {
     }
   }
 
-  const data = await upstream?.json().catch(() => ({ error: fallbackError })) ?? { error: "Unauthenticated" };
+  const data = (await upstream?.json().catch(() => ({ error: fallbackError }))) ?? { error: "Unauthenticated" };
   const response = NextResponse.json(data, { status: upstream?.status ?? 401 });
   if (refreshed && upstream?.status !== 401) setAdminAuthCookies(response, refreshed);
   if (!upstream || upstream.status === 401) clearAdminAuthCookies(response);
