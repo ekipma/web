@@ -52,8 +52,8 @@ const features: {
 
 export function FeatureDemo({ locale }: { locale: Locale }) {
   const copy = messages[locale];
-  const demo = locale === "fa" ? { caption: "نگاهی کوتاه به زندگی روزمره", home: "آپارتمان ۴", life: "زندگی با آدم‌هایت", friends: "۴ دوست", grocery: "خرید روزانه", paid: "پرداخت‌شده توسط تو · تقسیم بین ۴ نفر", paidLabel: "پرداخت شد", share: "سهم", fair: "سهم منصفانه. ذهن آسوده.", kitchen: "تمیزکاری آشپزخانه", every: "هر ۲۴ ساعت", next: "نفر بعد", turn: "نوبت سم", turnCopy: "ژول سهمش را انجام داد. نوبت سم است.", effort: "آشپزخانه تمیز، کار تیمی است.", reset: "بازنشانی نمونه", try: "امتحان کن: نوبت را انجام بده", complete: "نوبت انجام شد. سم نفر بعدی است!", friday: "برنامه‌های جمعه", movie: "یک فیلم دیگر؟", place: "۷:۳۰ شب · خانه ما", snacks: "خوراکی‌های موردعلاقه‌ات را بیاور.", choose: "فیلم را با هم انتخاب می‌کنیم.", invited: "همه گروه دعوت‌اند", actual: "یک ایده خوب. یک برنامه واقعی.", note: "نمونه نمایشی است؛ گروه شما، زندگی شما.", turnNote: "نمونه را امتحان کن. کارهای واقعی منتظر می‌مانند." } : { caption: "A LITTLE LOOK AT EVERYDAY LIFE", home: "Apartment 4", life: "Life with your people", friends: "4 friends", grocery: "THE GROCERY RUN", paid: "Paid by you · Shared by 4", paidLabel: "Paid", share: "Share", fair: "Fair shares. Clear heads.", kitchen: "Kitchen clean-up", every: "Every 24h", next: "UP NEXT", turn: "Sam’s turn", turnCopy: "Jules did their bit. Over to Sam.", effort: "A clean kitchen is a team effort.", reset: "Reset example", try: "Try it: mark turn done", complete: "Turn completed. Sam is up next!", friday: "FRIDAY PLANS", movie: "One more movie?", place: "7:30 PM · Our living room", snacks: "Bring your favorite snacks.", choose: "We’ll figure out the movie together.", invited: "The whole crew’s invited", actual: "A good idea. An actual plan.", note: "Illustrative example. Your group, your everyday.", turnNote: "Give the example a try. Your real chores can wait." };
-  const localizedFeatures = features.map((feature, index) => locale === "en" ? feature : ({ ...feature, name: copy.tri[index], title: [["هزینه‌ها را", "منصفانه تقسیم کنید."], ["نوبت عادلانه.", "خانه شادتر."], ["کمترِ «برنامه چیه؟»", "بیشتر کنار هم بودن."]][index].join("\n"), copy: [["خرید را یک نفر انجام می‌دهد و شام را یکی دیگر. هر هزینه مشترک را ثبت کنید تا کسی مجبور نباشد یادش بماند چه کسی پرداخت کرده است."], ["ظرف‌ها خودشان شسته نمی‌شوند. برای مسئولیت‌های تکراری ترتیب روشنی بسازید تا همه بدانند نوبتشان کی است."], ["شب فیلم، جلسه درس یا سفر آخر هفته. آدم‌ها، زمان و مکان را کنار هم نگه دارید تا یک ایده خوب تبدیل به برنامه واقعی شود."]][index][0], points: [["تقسیم مساوی با دوستان", "بدانید چه کسی چه‌قدر بدهکار است", "تسویه‌ها را ثبت و تأیید کنید"], ["آدم‌های چرخه را انتخاب کنید", "برای هر نوبت زمان تعیین کنید", "انجامش دهید و به نفر بعدی بدهید"], ["آدم‌هایت را انتخاب کن", "زمان و مکان اضافه کن", "جزئیات را به تقویمت ببر"]][index] }));
+  const demo = locale === "fa" ? { caption: "یه روز معمولی توی اکیپ ما", home: "خونه ما", life: "کنار هم‌خونه‌ها", friends: "۴ دوست", grocery: "خرید روزانه", paid: "تو حساب کردی · سهم ۴ نفر", paidLabel: "پرداخت شد", share: "سهم", fair: "سهم هر کس مشخصه، خیال همه راحت.", kitchen: "تمیز کردن آشپزخونه", every: "هر ۲۴ ساعت", next: "نفر بعد", turn: "نوبت سارا", turnCopy: "نیما کارش رو انجام داد. حالا نوبت ساراست.", effort: "خونه تمیز، با همکاری همه.", reset: "از اول امتحان کن", try: "امتحان کن: انجامش دادم!", complete: "انجام شد! حالا نوبت ساراست.", friday: "برنامه‌های جمعه", movie: "یه فیلم ببینیم؟", place: "۷:۳۰ شب · خانه ما", snacks: "خوراکی یادت نره!", choose: "فیلم رو هم با هم انتخاب می‌کنیم.", invited: "کل اکیپ دعوتن", actual: "این بار دیگه قرارمون قطعیه!", note: "این فقط یه نمونه‌ست؛ اکیپ خودت رو بساز.", turnNote: "اینجا امتحانش کن، بعد نوبت خونه خودتونه!" } : { caption: "A LITTLE LOOK AT EVERYDAY LIFE", home: "Apartment 4", life: "Life with your people", friends: "4 friends", grocery: "THE GROCERY RUN", paid: "Paid by you · Shared by 4", paidLabel: "Paid", share: "Share", fair: "Fair shares. Clear heads.", kitchen: "Kitchen clean-up", every: "Every 24h", next: "UP NEXT", turn: "Sam’s turn", turnCopy: "Jules did their bit. Over to Sam.", effort: "A clean kitchen is a team effort.", reset: "Reset example", try: "Try it: mark turn done", complete: "Turn completed. Sam is up next!", friday: "FRIDAY PLANS", movie: "One more movie?", place: "7:30 PM · Our living room", snacks: "Bring your favorite snacks.", choose: "We’ll figure out the movie together.", invited: "The whole crew’s invited", actual: "A good idea. An actual plan.", note: "Illustrative example. Your group, your everyday.", turnNote: "Give the example a try. Your real chores can wait." };
+  const localizedFeatures = features.map((feature, index) => locale === "en" ? feature : ({ ...feature, name: copy.tri[index], title: [["رفاقت رو نگه دار،", "خرج‌ها رو تقسیم کن."], ["هر کس به نوبت.", "همه با خیال راحت."], ["کمترِ «پس چی شد؟»", "بیشتر دور هم بودن."]][index].join("\n"), copy: [["یه بار تو خرید می‌کنی، یه بار دوستت شام رو حساب می‌کنه. خرج‌ها رو ثبت کن تا سهم هر کس مشخص باشه و حساب‌وکتاب بین رفاقتتون نیاد."], ["ظرف‌ها که خودشون شسته نمی‌شن! کارها رو نوبتی کن تا همه بدونن کی باید دست‌به‌کار بشن."], ["فیلم، درس یا سفر آخر هفته؛ مشخص کنید کیا میان، کی و کجا. این بار «یه روز بریم» رو به یه قرار واقعی تبدیل کنید."]][index][0], points: [["تقسیم مساوی با دوستان", "ببین کی چقدر بدهکاره", "تسویه‌ها رو ثبت و تأیید کن"], ["مشخص کن کیا توی نوبت هستن", "فاصله نوبت‌ها رو مشخص کن", "انجام شد؟ نوبت نفر بعد!"], ["دوستات رو انتخاب کن", "زمان و مکان رو مشخص کن", "قرار رو به تقویمت اضافه کن"]][index] }));
   const [active, setActive] = useState(0);
   const [completed, setCompleted] = useState(false);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -136,7 +136,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
           </div>
           <div className="demo-stage">
             <span className="demo-caption">
-              {demo.caption} <span>DEMO</span>
+              {demo.caption} <span>{locale === "fa" ? "نمونه" : "DEMO"}</span>
             </span>
             <div className="demo-window">
               <div className="demo-window-header">
@@ -160,7 +160,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
                   </div>
                   <div className="demo-divider" />
                   <div className="expense-people">
-                    {["You", "Jules", "Sam", "Alex"].map((name, i) => (
+                    {(locale === "fa" ? ["تو", "نیما", "سارا", "علی"] : ["You", "Jules", "Sam", "Alex"]).map((name, i) => (
                       <div key={name}>
                         <span className={`mini-avatar person-${i}`}>
                           {name[0]}
@@ -187,9 +187,9 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
                     <span>{demo.every}</span>
                   </div>
                   <div className="current-turn">
-                    <span className="turn-avatar">{completed ? "S" : "J"}</span>
+                    <span className="turn-avatar">{locale === "fa" ? (completed ? "س" : "ن") : (completed ? "S" : "J")}</span>
                     <span>{demo.next}</span>
-                    <strong>{completed ? demo.turn : locale === "fa" ? "نوبت ژول" : "Jules’s turn"}</strong>
+                    <strong>{completed ? demo.turn : locale === "fa" ? "نوبت نیما" : "Jules’s turn"}</strong>
                     <p>
                       {completed
                         ? demo.turnCopy
@@ -206,7 +206,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
                   <p className="demo-feedback" role="status">
                     {completed
                       ? demo.complete
-                      : "Jules → Sam → Alex → You"}
+                      : locale === "fa" ? "نیما ← سارا ← علی ← تو" : "Jules → Sam → Alex → You"}
                   </p>
                 </div>
               ) : (
@@ -217,7 +217,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
                   </div>
                   <div className="plan-event">
                     <span className="date-square">
-                      <small>FRI</small>18
+                      <small>{locale === "fa" ? "جمعه" : "FRI"}</small>{locale === "fa" ? "۱۸" : "18"}
                     </span>
                     <div>
                       <h4>{demo.movie}</h4>
@@ -231,7 +231,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
                   </div>
                   <div className="plan-attendees">
                     <span className="stacked-avatars">
-                      {["J", "S", "A", "Y"].map((letter, i) => (
+                      {(locale === "fa" ? ["ن", "س", "ع", "ت"] : ["J", "S", "A", "Y"]).map((letter, i) => (
                         <i key={letter} className={`mini-avatar person-${i}`}>
                           {letter}
                         </i>

@@ -11,7 +11,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   const { locale: requestedLocale } = await searchParams;
   const locale = isLocale(requestedLocale) ? requestedLocale : "en";
   const copy = messages[locale];
-  const title = locale === "fa" ? "اکیپما — هزینه‌ها را تقسیم کنید، نوبت‌ها را بچرخانید، برنامه بسازید" : "Ekipma — Share expenses. Take turns. Make plans.";
+  const title = locale === "fa" ? "اکیپما — رفاقت رو نگه دار، تقسیم کنید، نوبت‌ها را بچرخانید، برنامه بسازید" : "Ekipma — Share expenses. Take turns. Make plans.";
   return { title, description: copy.hero.description, alternates: { canonical: `/${locale}`, languages: { en: "/en", fa: "/fa", "x-default": "/en" } }, openGraph: { title, description: copy.hero.description, locale: locale === "fa" ? "fa_IR" : "en_US" } };
 }
 
@@ -115,7 +115,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             </span>
           </div>
           <div className="hero-bottom">
-            <span>{locale === "fa" ? "کمی نظم. باهم‌بودن بیشتر." : "A LITTLE ORDER. A LOT MORE TOGETHER."}</span>
+            <span>{locale === "fa" ? "کمتر درگیر کارها، بیشتر کنار هم." : "A LITTLE ORDER. A LOT MORE TOGETHER."}</span>
             <a href="#features" aria-label="Explore the three features">
               <Icon name="down" />
             </a>
@@ -196,16 +196,16 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               {copy.together.sceneLabel}
             </span>
             <div className="avatar avatar-one">
-              JD<span>Jules</span>
+              {locale === "fa" ? "ن" : "JD"}<span>{locale === "fa" ? "نیما" : "Jules"}</span>
             </div>
             <div className="avatar avatar-two">
-              SK<span>Sam</span>
+              {locale === "fa" ? "س" : "SK"}<span>{locale === "fa" ? "سارا" : "Sam"}</span>
             </div>
             <div className="avatar avatar-three">
-              AL<span>Alex</span>
+              {locale === "fa" ? "ع" : "AL"}<span>{locale === "fa" ? "علی" : "Alex"}</span>
             </div>
             <div className="avatar avatar-four">
-              YO<span>You</span>
+              {locale === "fa" ? "ت" : "YO"}<span>{locale === "fa" ? "تو" : "You"}</span>
             </div>
             <div className="group-center">
               <Icon name="home" />
@@ -224,7 +224,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               <Icon name="calendar" /> {copy.together.movie}
             </span>
             <span className="scene-label label-bottom">
-              SAME CREW. LESS COORDINATING.
+              {locale === "fa" ? "همون اکیپ، دردسر کمتر." : "SAME CREW. LESS COORDINATING."}
             </span>
           </div>
         </section>
