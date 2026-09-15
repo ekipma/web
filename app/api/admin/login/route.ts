@@ -1,10 +1,10 @@
+import { adminFetch, apiBaseUrl, setAdminAuthCookies } from "@/lib/admin-api";
 import { NextResponse } from "next/server";
-import { adminFetch, setAdminAuthCookies } from "@/lib/admin-api";
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null) as { mobile?: string; password?: string } | null;
   if (!body?.mobile || !body.password) return NextResponse.json({ error: "Enter your mobile and password." }, { status: 422 });
-  const login = await fetch(`${process.env.EKIPMA_API_URL ?? "http://127.0.0.1:8086"}/api/v1/auth/login`, {
+  const login = await fetch(`${apiBaseUrl}/api/v1/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Version": "v0.8.1" },
     body: JSON.stringify({ mobile: body.mobile, password: body.password }),
