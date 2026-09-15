@@ -1,11 +1,22 @@
 import Image from "next/image";
+import type { Metadata } from "next";
 import phones from "@/assets/images/phones.png";
 import { Icon } from "./_components/icon";
 import { Header } from "./_components/header";
 import { FeatureDemo } from "./_components/feature-demo";
 import { site } from "./site-config";
+import { isLocale, messages, type Locale } from "./i18n";
 
-function StoreLinks() {
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ locale?: string }> }): Promise<Metadata> {
+  const { locale: requestedLocale } = await searchParams;
+  const locale = isLocale(requestedLocale) ? requestedLocale : "en";
+  const copy = messages[locale];
+  const title = locale === "fa" ? "ایکیپما — هزینه‌ها را تقسیم کنید، نوبت‌ها را بچرخانید، برنامه بسازید" : "Ekipma — Share expenses. Take turns. Make plans.";
+  return { title, description: copy.hero.description, alternates: { canonical: `/${locale}`, languages: { en: "/en", fa: "/fa", "x-default": "/en" } }, openGraph: { title, description: copy.hero.description, locale: locale === "fa" ? "fa_IR" : "en_US" } };
+}
+
+function StoreLinks({ locale }: { locale: Locale }) {
+  const copy = messages[locale];
   return (
     <div className="store-links">
       {(["googlePlay", "appStore"] as const).map((store) => {
@@ -14,7 +25,7 @@ function StoreLinks() {
           <>
             <Icon name={store === "googlePlay" ? "play" : "apple"} />
             <span>
-              <small>{href ? "Download on" : "Coming soon to"}</small>
+              <small>{href ? copy.store.download : copy.store.soon}</small>
               <strong>
                 {store === "googlePlay" ? "Google Play" : "App Store"}
               </strong>
@@ -39,96 +50,54 @@ function StoreLinks() {
   );
 }
 
-const plans = [
-  {
-    name: "Free",
-    caption: "For you and your favorite people.",
-    price: "Free",
-    period: "Always a good place to start.",
-    features: [
-      "Shared expenses & repayments",
-      "Rotating turns & responsibilities",
-      "Plans with your friends",
-      "Groups for your shared life",
-    ],
-    cta: "Get Ekipma",
-    href: "#download",
-  },
-  {
-    name: "Premium",
-    caption: "A little more insight. A lot more clarity.",
-    price: site.premiumPrice || "Monthly",
-    period: site.premiumPrice ? "per month" : "Pricing to be announced",
-    features: [
-      "Everything in Free",
-      "Spending analytics & charts",
-      "A closer look at your expenses",
-      "More room for your circle",
-    ],
-    cta: "Explore Premium",
-    href: "#premium-info",
-  },
-  {
-    name: "Company",
-    caption: "For a bigger kind of together.",
-    price: "Let’s talk",
-    period: "A plan shaped around your team.",
-    features: [
-      "Tell us about your organization",
-      "Discuss the features you need",
-      "Find the right plan together",
-    ],
-    cta: "Contact us",
-    href: "#contact",
-  },
-];
-
-export default function Home() {
+export default async function Home({ searchParams }: { searchParams: Promise<{ locale?: string }> }) {
+  const { locale: requestedLocale } = await searchParams;
+  const locale: Locale = isLocale(requestedLocale) ? requestedLocale : "en";
+  const copy = messages[locale];
+  const plans = copy.plans.map((plan, index) => ({ ...plan, price: index === 1 && site.premiumPrice ? site.premiumPrice : plan.price, href: index === 0 ? "#download" : index === 1 ? "#premium-info" : "#contact" }));
   return (
     <>
       <a className="skip-link" href="#main">
-        Skip to content
+        {copy.skip}
       </a>
-      <Header />
+      <Header locale={locale} />
       <main id="main">
         <section className="hero frame" aria-labelledby="hero-title">
           <div className="hero-grid" aria-hidden="true" />
           <div className="hero-content">
             <p className="eyebrow">
-              <span className="status-dot" /> LIFE’S BETTER WITH YOUR PEOPLE
+              <span className="status-dot" /> {copy.hero.eyebrow}
             </p>
             <h1 id="hero-title">
-              Less sorting.
+              {copy.hero.title[0]}
               <br />
-              <span>More living.</span>
+              <span>{copy.hero.title[1]}</span>
             </h1>
             <p className="hero-description">
-              The little things add up when you live together.
-              <br className="desktop-break" /> Keep expenses, turns, and plans
-              in one happy place.
+              {copy.hero.description}
             </p>
             <div className="hero-actions">
               <a href="#download" className="button primary">
-                Get Ekipma <Icon name="download" />
+                {copy.hero.primary} <Icon name="download" />
               </a>
               <a href="#features" className="text-link">
-                Meet your new plus-one <Icon name="arrow" />
+                {copy.hero.secondary} <Icon name="arrow" />
               </a>
             </div>
             <p className="hero-note">
-              Made for friends. Right at home with roommates.
+              {copy.hero.note}
             </p>
           </div>
           <div className="hero-visual">
             <div className="hero-orbit orbit-one" aria-hidden="true" />
             <div className="hero-orbit orbit-two" aria-hidden="true" />
             <span className="visual-caption">
-              <span className="tiny-cross">+</span> YOUR WHOLE CREW. IN SYNC.
+              <span className="tiny-cross">+</span> {copy.hero.caption}
             </span>
             <Image
               className="hero-phones"
               src={phones}
-              alt="Ekipma’s three app screens showing shared expenses, rotating chores, and upcoming plans in the Persian interface"
+                alt="Ekipma app screens"
               sizes="(max-width: 760px) 95vw, (max-width: 1200px) 55vw, 650px"
               preload
             />
@@ -137,8 +106,8 @@ export default function Home() {
                 <Icon name="check" />
               </span>
               <div>
-                <strong>Good friends. Clear tabs.</strong>
-                <span>A little less “who owes who?”</span>
+                <strong>{copy.hero.stickerTitle}</strong>
+                <span>{copy.hero.stickerCopy}</span>
               </div>
             </div>
             <span className="visual-index" aria-hidden="true">
@@ -146,7 +115,7 @@ export default function Home() {
             </span>
           </div>
           <div className="hero-bottom">
-            <span>A LITTLE ORDER. A LOT MORE TOGETHER.</span>
+            <span>{locale === "fa" ? "کمی نظم. باهم‌بودن بیشتر." : "A LITTLE ORDER. A LOT MORE TOGETHER."}</span>
             <a href="#features" aria-label="Explore the three features">
               <Icon name="down" />
             </a>
@@ -154,21 +123,21 @@ export default function Home() {
         </section>
         <div
           className="tri-slogan frame"
-          aria-label="Share expenses. Take turns. Make plans."
+          aria-label={copy.tri.join(" ")}
         >
           <a href="#features" className="tone-pay">
             <Icon name="split" />
-            <span>Share expenses.</span>
+            <span>{copy.tri[0]}</span>
             <span className="slogan-number">01</span>
           </a>
           <a href="#features" className="tone-turn">
             <Icon name="turn" />
-            <span>Take turns.</span>
+            <span>{copy.tri[1]}</span>
             <span className="slogan-number">02</span>
           </a>
           <a href="#features" className="tone-plan">
             <Icon name="calendar" />
-            <span>Make plans.</span>
+            <span>{copy.tri[2]}</span>
             <span className="slogan-number">03</span>
           </a>
         </div>
@@ -180,21 +149,19 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow section-label">
-                01 / THE EVERYDAY, SIMPLIFIED
+                {copy.features.label}
               </p>
               <h2 id="features-title">
-                Three little things.
+                {copy.features.title[0]}
                 <br />
-                <span>One less thing on your mind.</span>
+                <span>{copy.features.title[1]}</span>
               </h2>
             </div>
             <p>
-              From the grocery run to the weekend away.
-              <br />
-              Less admin for the group. More room for the good stuff.
+              {copy.features.copy}
             </p>
           </div>
-          <FeatureDemo />
+          <FeatureDemo locale={locale} />
         </section>
         <section
           id="together"
@@ -203,32 +170,30 @@ export default function Home() {
         >
           <div className="together-copy">
             <p className="eyebrow section-label">
-              02 / BUILT AROUND YOUR CIRCLE
+              {copy.together.label}
             </p>
             <h2 id="together-title">
-              Your people.
+              {copy.together.title[0]}
               <br />
-              Your place.
+              {copy.together.title[1]}
               <br />
-              <span>Your little system.</span>
+              <span>{copy.together.title[2]}</span>
             </h2>
             <p>
-              A dorm room, a shared apartment, or the friends who always say “we
-              should do something.” Make a group and give your everyday life a
-              home.
+              {copy.together.copy}
             </p>
             <a className="text-link" href="#download">
-              Bring your people <Icon name="arrow" />
+              {copy.together.cta} <Icon name="arrow" />
             </a>
           </div>
           <div
             className="circle-scene"
-            aria-label="Example group: Apartment 4, with four roommates sharing groceries, chores, and a movie night"
+            aria-label={copy.together.aria}
           >
             <div className="circle-ring ring-outer" />
             <div className="circle-ring ring-inner" />
             <span className="scene-label label-top">
-              A LITTLE SPACE FOR ALL OF YOU
+              {copy.together.sceneLabel}
             </span>
             <div className="avatar avatar-one">
               JD<span>Jules</span>
@@ -244,8 +209,8 @@ export default function Home() {
             </div>
             <div className="group-center">
               <Icon name="home" />
-              <strong>Apartment 4</strong>
-              <span>4 friends. One home.</span>
+              <strong>{copy.together.group}</strong>
+              <span>{copy.together.groupCopy}</span>
               <div className="group-dots">
                 <i />
                 <i />
@@ -253,10 +218,10 @@ export default function Home() {
               </div>
             </div>
             <span className="scene-chip chip-one">
-              <Icon name="split" /> Groceries, sorted
+              <Icon name="split" /> {copy.together.groceries}
             </span>
             <span className="scene-chip chip-two">
-              <Icon name="calendar" /> Friday is movie night
+              <Icon name="calendar" /> {copy.together.movie}
             </span>
             <span className="scene-label label-bottom">
               SAME CREW. LESS COORDINATING.
@@ -271,18 +236,16 @@ export default function Home() {
           <div className="section-heading">
             <div>
               <p className="eyebrow section-label">
-                03 / A PLAN FOR YOUR PEOPLE
+              {copy.pricing.label}
               </p>
               <h2 id="pricing-title">
-                Start together.
+                {copy.pricing.title[0]}
                 <br />
-                <span>Grow from there.</span>
+                <span>{copy.pricing.title[1]}</span>
               </h2>
             </div>
             <p>
-              The everyday essentials are free.
-              <br />
-              Go deeper with Premium, or talk to us about your team.
+              {copy.pricing.copy}
             </p>
           </div>
           <div className="pricing-grid">
@@ -294,7 +257,7 @@ export default function Home() {
                 <div className="plan-name">
                   <h3>{plan.name}</h3>
                   {index === 1 && (
-                    <span className="plan-badge">A little extra</span>
+                    <span className="plan-badge">{copy.pricing.extra}</span>
                   )}
                 </div>
                 <p className="plan-caption">{plan.caption}</p>
@@ -320,14 +283,11 @@ export default function Home() {
           </div>
           <details id="premium-info" className="premium-details">
             <summary>
-              What’s included in Premium?
+              {copy.pricing.details}
               <Icon name="plus" />
             </summary>
             <p>
-              Premium adds spending analytics and charts to help you understand
-              your shared expenses, with room for a larger circle of friends.
-              Monthly pricing and the final feature list will be shared here
-              when the plan is ready.
+              {copy.pricing.detailsCopy}
             </p>
           </details>
         </section>
@@ -336,28 +296,11 @@ export default function Home() {
           aria-labelledby="faq-title"
         >
           <div>
-            <p className="eyebrow section-label">A FEW THINGS TO KNOW</p>
-            <h2 id="faq-title">Good questions.</h2>
+            <p className="eyebrow section-label">{copy.faq.label}</p>
+            <h2 id="faq-title">{copy.faq.title}</h2>
           </div>
           <div className="faq-list">
-            {[
-              [
-                "Is Ekipma just for roommates?",
-                "It’s made for people who share things. Roommates and dorm friends are right at home, but you can also use it with your regular dinner crew, travel buddies, or any group planning life together.",
-              ],
-              [
-                "How do shared expenses work?",
-                "Add what you paid, choose the people sharing it, and Ekipma divides the total equally. Keep track of who owes what, record repayments, and confirm when you’ve settled up.",
-              ],
-              [
-                "What can we take turns doing?",
-                "Anything your group rotates: washing the dishes, cleaning the kitchen, or making the next grocery run. Set the order and period, then mark a turn done to move to the next person.",
-              ],
-              [
-                "What goes into a plan?",
-                "Give it a name, choose your people, and add the date and place. From a study session to a weekend hangout, the details stay together.",
-              ],
-            ].map(([question, answer]) => (
+            {copy.faq.items.map(([question, answer]) => (
               <details key={question}>
                 <summary>
                   {question}
@@ -381,39 +324,37 @@ export default function Home() {
             alt=""
             className="download-logo"
           />
-          <p className="eyebrow">FOR THE PEOPLE YOU DO LIFE WITH</p>
+          <p className="eyebrow">{copy.download.eyebrow}</p>
           <h2 id="download-title">
-            Make room for
+            {copy.download.title[0]}
             <br />
-            <span>the good stuff.</span>
+            <span>{copy.download.title[1]}</span>
           </h2>
-          <p>Your expenses, turns, and plans. Finally, together.</p>
-          <StoreLinks />
+          <p>{copy.download.copy}</p>
+          <StoreLinks locale={locale} />
           {site.androidApk && (
             <a className="apk-link" href={site.androidApk}>
-              Already on Android? Download the APK <Icon name="arrow" />
+              {copy.download.apk} <Icon name="arrow" />
             </a>
           )}
           <span className="download-footnote">
-            Small app. A little more harmony.
+            {copy.download.footnote}
           </span>
         </section>
         <section id="contact" className="contact-section frame">
           <div>
-            <h2>Something bigger in mind?</h2>
-            <p>
-              Let’s find out how Ekipma could fit your company or community.
-            </p>
+            <h2>{copy.contact.title}</h2>
+            <p>{copy.contact.copy}</p>
           </div>
           {site.contactEmail ? (
             <a
               className="button secondary"
               href={`mailto:${site.contactEmail}`}
             >
-              Contact us <Icon name="arrow" />
+              {copy.contact.cta} <Icon name="arrow" />
             </a>
           ) : (
-            <p className="contact-pending">Company inquiries open soon.</p>
+            <p className="contact-pending">{copy.contact.pending}</p>
           )}
         </section>
       </main>
@@ -425,11 +366,11 @@ export default function Home() {
           </span>
         </a>
         <span className="footer-caption">
-          A little less admin. A lot more us.
+          {copy.footer}
         </span>
         <nav aria-label="Footer">
-          <a href="#features">Features</a>
-          <a href="#pricing">Pricing</a>
+          <a href="#features">{copy.nav.features}</a>
+          <a href="#pricing">{copy.nav.pricing}</a>
           <a href="https://github.com/ekipma">
             GitHub <Icon name="external" />
           </a>

@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const sans = localFont({
@@ -37,13 +38,14 @@ export const viewport: Viewport = {
   themeColor: "#09090b",
   colorScheme: "dark",
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = (await headers()).get("x-ekipma-locale") === "fa" ? "fa" : "en";
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"} className={sans.variable}>
       <body>{children}</body>
     </html>
   );

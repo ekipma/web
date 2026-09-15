@@ -3,9 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Icon } from "./icon";
+import { messages, type Locale } from "../i18n";
 
-export function Header() {
+export function Header({ locale }: { locale: Locale }) {
   const [open, setOpen] = useState(false);
+  const copy = messages[locale];
+  const alternateLocale = locale === "fa" ? "en" : "fa";
   return (
     <header className="header">
       <div className="header-inner frame">
@@ -27,12 +30,15 @@ export function Header() {
           </span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
-          <a href="#features">Features</a>
-          <a href="#together">Why Ekipma</a>
-          <a href="#pricing">Pricing</a>
+          <a href="#features">{copy.nav.features}</a>
+          <a href="#together">{copy.nav.why}</a>
+          <a href="#pricing">{copy.nav.pricing}</a>
         </nav>
+        <a className="locale-switch" href={`/${alternateLocale}`} aria-label={copy.languageLabel}>
+          {copy.language}
+        </a>
         <a className="header-download button secondary" href="#download">
-          Get the app <Icon name="arrow" />
+          {copy.nav.download} <Icon name="arrow" />
         </a>
         <button
           className="menu-toggle"
@@ -57,16 +63,20 @@ export function Header() {
         }}
       >
         {[
-          ["Features", "features"],
-          ["Why Ekipma", "together"],
-          ["Pricing", "pricing"],
-          ["Get the app", "download"],
+          [copy.nav.features, "features"],
+          [copy.nav.why, "together"],
+          [copy.nav.pricing, "pricing"],
+          [copy.nav.download, "download"],
         ].map(([label, id]) => (
           <a href={`#${id}`} key={id} onClick={() => setOpen(false)}>
             {label}
             <Icon name="arrow" />
           </a>
         ))}
+        <a href={`/${alternateLocale}`} onClick={() => setOpen(false)}>
+          {copy.language}
+          <Icon name="arrow" />
+        </a>
       </nav>
     </header>
   );

@@ -171,6 +171,12 @@ summary {
 .desktop-nav a:hover {
   color: white;
 }
+.locale-switch {
+  color: var(--muted);
+  font-size: 11px;
+  transition: color 0.2s;
+}
+.locale-switch:hover { color: var(--foreground); }
 .button {
   display: inline-flex;
   align-items: center;
@@ -2029,4 +2035,21 @@ details[open] > summary .icon {
 
 .feature-tabs button:focus-visible {
   outline-offset: -5px;
+}
+
+html[dir="rtl"] body { text-align: right; }
+html[dir="rtl"] .hero-content { padding: 65px 40px 100px 0; }
+html[dir="rtl"] .hero-visual { margin-left: 0; margin-right: -35px; }
+html[dir="rtl"] .hero .eyebrow, html[dir="rtl"] .hero-actions, html[dir="rtl"] .text-link, html[dir="rtl"] .store-button, html[dir="rtl"] .contact-section, html[dir="rtl"] .footer, html[dir="rtl"] .header-inner { direction: rtl; }
+html[dir="rtl"] .hero-actions, html[dir="rtl"] .store-links, html[dir="rtl"] .desktop-nav { flex-direction: row-reverse; }
+html[dir="rtl"] .feature-tabs button, html[dir="rtl"] .pricing-card li, html[dir="rtl"] .faq-list summary { direction: rtl; text-align: right; }
+html[dir="rtl"] .feature-tabs button > .icon:last-child, html[dir="rtl"] .text-link > .icon, html[dir="rtl"] .button > .icon, html[dir="rtl"] .apk-link > .icon { transform: scaleX(-1); }
+html[dir="rtl"] .together-copy { padding: 0 35px 0 0; }
+html[dir="rtl"] .circle-scene { direction: ltr; }
+html[dir="rtl"] .circle-scene .scene-label, html[dir="rtl"] .circle-scene .scene-chip, html[dir="rtl"] .circle-scene .group-center { direction: rtl; }
+html[dir="rtl"] .footer nav { direction: rtl; }
+@media (max-width: 760px) {
+  html[dir="rtl"] .hero-content { padding-right: 28px; padding-left: 28px; }
+  html[dir="rtl"] .hero-visual { margin-right: 0; }
+  html[dir="rtl"] .together-copy { padding: 0; }
 }
