@@ -22,6 +22,12 @@ export type AdminGroup = {
   photoUrl: string; adminId: string; adminName: string; memberCount: number;
 };
 export type AdminGroupPage = { groups: AdminGroup[]; total: number; newLast30Days: number; offset: number; limit: number };
+export type AdminOverview = {
+  periodDays: number; activePremium: number; premiumExpiringSevenDays: number; expiredPremium: number; godPlans: number;
+  activeGroups: number; previousActiveGroups: number; records: number; expenses: number; turns: number; plans: number; turnGroups: number;
+  collaborationChart: { start: string; value: number }[];
+  recentActivity: { id: string; title: string; type: "expense" | "turn" | "plan"; groupId: string; groupName: string; createdAt: string }[];
+};
 export type AdminSystem = {
   api: { status: string };
   database: { status: string; latencyMs: number };
@@ -60,6 +66,11 @@ export async function getAdminUsers(token: string): Promise<AdminUserPage | null
 
 export async function getAdminGroups(token: string): Promise<AdminGroupPage | null> {
   const response = await adminFetch("/groups?limit=50", token);
+  return response.ok ? response.json() : null;
+}
+
+export async function getAdminOverview(token: string, days = 30): Promise<AdminOverview | null> {
+  const response = await adminFetch(`/overview?days=${days}`, token);
   return response.ok ? response.json() : null;
 }
 
