@@ -157,11 +157,6 @@ summary {
   letter-spacing: -1px;
 }
 .brand img {
-  filter: grayscale(1);
-  transition: filter 0.3s;
-}
-.brand:hover img,
-.brand:focus-visible img {
   filter: none;
 }
 .brand-dot {
@@ -276,12 +271,15 @@ summary {
   margin-top: 28px;
 }
 .hero h1 > span {
-  color: #898991;
+  background: linear-gradient(105deg, #b6a7ff 5%, #73dfdc 56%, #f0a4d4 105%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 .hero-description {
   font-size: 15px;
   line-height: 1.9;
-  color: #a2a2aa;
+  color: #b9b5ca;
   margin-top: 27px;
   max-width: 415px;
 }
@@ -326,7 +324,7 @@ summary {
   background: radial-gradient(ellipse, #a18fff15, transparent 65%);
   z-index: -1;
   transition: opacity 0.6s;
-  opacity: 0.65;
+  opacity: 1;
 }
 .hero-visual:hover::before {
   opacity: 1;
@@ -337,12 +335,9 @@ summary {
   max-width: none;
   height: auto;
   margin-top: 5px;
-  filter: saturate(0.25);
+  filter: saturate(1);
   transition: filter 0.65s;
   mask-image: linear-gradient(#000 75%, #0000 97%);
-}
-.hero-visual:hover .hero-phones {
-  filter: saturate(1);
 }
 .hero-orbit {
   position: absolute;
@@ -1036,7 +1031,7 @@ h2 span {
   position: absolute;
   inset: 0;
   background: radial-gradient(#a18fff10, transparent 70%);
-  opacity: 0;
+  opacity: 0.65;
   transition: opacity 0.5s;
 }
 .circle-scene:hover:before {
@@ -1077,17 +1072,17 @@ h2 span {
 .group-dots i {
   width: 4px;
   height: 4px;
-  background: #727079;
+  background: var(--lavender);
   border-radius: 50%;
   transition: background 0.4s;
 }
-.circle-scene:hover .group-dots i:nth-child(1) {
+.group-dots i:nth-child(1) {
   background: var(--pay);
 }
-.circle-scene:hover .group-dots i:nth-child(2) {
+.group-dots i:nth-child(2) {
   background: var(--turn);
 }
-.circle-scene:hover .group-dots i:nth-child(3) {
+.group-dots i:nth-child(3) {
   background: var(--plan);
 }
 .avatar {
@@ -1113,29 +1108,21 @@ h2 span {
 .avatar-one {
   top: 35px;
   left: 38%;
+  background: #544429;
 }
 .avatar-two {
   right: 11%;
   top: 39%;
+  background: #225b54;
 }
 .avatar-three {
   left: 31%;
   bottom: 25px;
+  background: #56324b;
 }
 .avatar-four {
   left: 7%;
   top: 34%;
-}
-.circle-scene:hover .avatar-one {
-  background: #544429;
-}
-.circle-scene:hover .avatar-two {
-  background: #225b54;
-}
-.circle-scene:hover .avatar-three {
-  background: #56324b;
-}
-.circle-scene:hover .avatar-four {
   background: #463a71;
 }
 .scene-chip {
@@ -1166,10 +1153,10 @@ h2 span {
   bottom: 19%;
   transform: rotate(-5deg);
 }
-.circle-scene:hover .chip-one .icon {
+.chip-one .icon {
   color: var(--pay);
 }
-.circle-scene:hover .chip-two .icon {
+.chip-two .icon {
   color: var(--plan);
 }
 .scene-label {
@@ -1689,7 +1676,7 @@ details[open] > summary .icon {
     width: 100%;
     max-width: 590px;
     margin-top: 0;
-    filter: saturate(0.65);
+    filter: saturate(1);
   }
   .visual-caption {
     display: none;
