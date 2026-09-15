@@ -26,7 +26,7 @@ export function Header({ locale }: { locale: Locale }) {
             preload
           />
           <span>
-            ekipma<span className="brand-dot">.</span>
+            {locale === "fa" ? "اکیپما" : <>ekipma<span className="brand-dot">.</span></>}
           </span>
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
@@ -34,12 +34,14 @@ export function Header({ locale }: { locale: Locale }) {
           <a href="#together">{copy.nav.why}</a>
           <a href="#pricing">{copy.nav.pricing}</a>
         </nav>
-        <a className="locale-switch" href={`/${alternateLocale}`} aria-label={copy.languageLabel}>
-          {copy.language}
-        </a>
-        <a className="header-download button secondary" href="#download">
-          {copy.nav.download} <Icon name="arrow" />
-        </a>
+        <div className="header-actions">
+          <a className="locale-switch" href={`/${alternateLocale}`} aria-label={copy.languageLabel}>
+            {copy.language}
+          </a>
+          <a className="header-download button secondary" href="#download">
+            {copy.nav.download} <Icon name="arrow" />
+          </a>
+        </div>
         <button
           className="menu-toggle"
           aria-expanded={open}

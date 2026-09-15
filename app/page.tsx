@@ -11,7 +11,7 @@ export async function generateMetadata({ searchParams }: { searchParams: Promise
   const { locale: requestedLocale } = await searchParams;
   const locale = isLocale(requestedLocale) ? requestedLocale : "en";
   const copy = messages[locale];
-  const title = locale === "fa" ? "ایکیپما — هزینه‌ها را تقسیم کنید، نوبت‌ها را بچرخانید، برنامه بسازید" : "Ekipma — Share expenses. Take turns. Make plans.";
+  const title = locale === "fa" ? "اکیپما — هزینه‌ها را تقسیم کنید، نوبت‌ها را بچرخانید، برنامه بسازید" : "Ekipma — Share expenses. Take turns. Make plans.";
   return { title, description: copy.hero.description, alternates: { canonical: `/${locale}`, languages: { en: "/en", fa: "/fa", "x-default": "/en" } }, openGraph: { title, description: copy.hero.description, locale: locale === "fa" ? "fa_IR" : "en_US" } };
 }
 

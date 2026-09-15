@@ -62,7 +62,7 @@ export function FeatureDemo({ locale }: { locale: Locale }) {
       <div
         className="feature-tabs"
         role="tablist"
-        aria-label={locale === "fa" ? "ویژگی‌های ایکیپما را ببینید" : "Explore Ekipma features"}
+        aria-label={locale === "fa" ? "ویژگی‌های اکیپما را ببینید" : "Explore Ekipma features"}
       >
         {localizedFeatures.map((item, index) => (
           <button
