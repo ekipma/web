@@ -17,6 +17,17 @@ export type AdminUser = {
 };
 
 export type AdminUserPage = { users: AdminUser[]; total: number; offset: number; limit: number };
+export type AdminSystem = {
+  api: { status: string };
+  database: { status: string; latencyMs: number };
+  system: {
+    collectedAt: string; hostname: string; os: string; arch: string; goVersion: string;
+    uptimeSeconds: number; processUptimeSeconds: number; goroutines: number;
+    cpu: { cores: number; usagePercent: number };
+    memory: { totalBytes: number; usedBytes: number; processBytes: number; usagePercent: number };
+    disk: { path: string; totalBytes: number; usedBytes: number; usagePercent: number };
+  };
+};
 
 export function adminApiUrl(path: string) {
   return `${apiBaseUrl}/api/v1/admin${path}`;
@@ -39,5 +50,10 @@ export async function getAdminSession(): Promise<{ user: AdminUser; token: strin
 
 export async function getAdminUsers(token: string): Promise<AdminUserPage | null> {
   const response = await adminFetch("/users?limit=50", token);
+  return response.ok ? response.json() : null;
+}
+
+export async function getAdminSystem(token: string): Promise<AdminSystem | null> {
+  const response = await adminFetch("/system", token);
   return response.ok ? response.json() : null;
 }
