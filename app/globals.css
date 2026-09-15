@@ -1,5 +1,43 @@
 @import "tailwindcss";
 
+/* Persian captions use the same locally loaded font as the body.
+   Locale specificity also overrides the smaller mobile caption rules. */
+html:lang(fa) :is(.header, #main, .footer),
+html:lang(fa) :is(.header, #main, .footer) * {
+  letter-spacing: normal;
+}
+html:lang(fa) :is(
+  .eyebrow,
+  .visual-caption,
+  .hero-bottom,
+  .demo-caption,
+  .expense-total > span,
+  .current-turn > span:nth-child(2),
+  .calendar-top,
+  .scene-label
+) {
+  font-family: var(--font-sans-local), sans-serif;
+  font-size: 12px;
+  line-height: 1.8;
+}
+html:lang(fa) .hero .eyebrow,
+html:lang(fa) .download-section > .eyebrow {
+  font-size: 12px;
+}
+html:lang(fa) :is(
+  .demo-caption > span,
+  .hero-note,
+  .hero-sticker div > span,
+  .demo-stage-note,
+  .download-footnote
+) {
+  font-size: 11px;
+  line-height: 1.8;
+}
+html:lang(fa) .demo-caption {
+  gap: 12px;
+}
+
 :root {
   --background: #09090b;
   --foreground: #f3f3f5;
