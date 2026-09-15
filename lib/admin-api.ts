@@ -17,6 +17,11 @@ export type AdminUser = {
 };
 
 export type AdminUserPage = { users: AdminUser[]; total: number; offset: number; limit: number };
+export type AdminGroup = {
+  id: string; createdAt: string; name: string; description: string; public: boolean;
+  photoUrl: string; adminId: string; adminName: string; memberCount: number;
+};
+export type AdminGroupPage = { groups: AdminGroup[]; total: number; newLast30Days: number; offset: number; limit: number };
 export type AdminSystem = {
   api: { status: string };
   database: { status: string; latencyMs: number };
@@ -50,6 +55,11 @@ export async function getAdminSession(): Promise<{ user: AdminUser; token: strin
 
 export async function getAdminUsers(token: string): Promise<AdminUserPage | null> {
   const response = await adminFetch("/users?limit=50", token);
+  return response.ok ? response.json() : null;
+}
+
+export async function getAdminGroups(token: string): Promise<AdminGroupPage | null> {
+  const response = await adminFetch("/groups?limit=50", token);
   return response.ok ? response.json() : null;
 }
 
