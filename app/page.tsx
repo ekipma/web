@@ -302,7 +302,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
         <span className="footer-caption">{copy.footer}</span>
         <span className="footer-enamad">
           <a referrerPolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id=7773843&Code=LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD">
-            <EnamadImage referrerPolicy="origin" src="https://trustseal.enamad.ir/logo.aspx?id=7773843&Code=LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" alt="" style={{ cursor: "pointer", objectFit: "contain" }} code="LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" width={80} height={80} />
+            <EnamadImage referrerPolicy="origin" src="https://trustseal.enamad.ir/logo.aspx?id=7773843&Code=LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" alt="" style={{ cursor: "pointer", objectFit: "contain" }} code="LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" width={60} height={60} />
           </a>
         </span>
         <nav aria-label="Footer">
