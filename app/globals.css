@@ -6,16 +6,7 @@ html:lang(fa) :is(.header, #main, .footer),
 html:lang(fa) :is(.header, #main, .footer) * {
   letter-spacing: normal;
 }
-html:lang(fa) :is(
-  .eyebrow,
-  .visual-caption,
-  .hero-bottom,
-  .demo-caption,
-  .expense-total > span,
-  .current-turn > span:nth-child(2),
-  .calendar-top,
-  .scene-label
-) {
+html:lang(fa) :is(.eyebrow, .visual-caption, .hero-bottom, .demo-caption, .expense-total > span, .current-turn > span:nth-child(2), .calendar-top, .scene-label) {
   font-family: var(--font-sans-local), sans-serif;
   font-size: 12px;
   line-height: 1.8;
@@ -24,13 +15,7 @@ html:lang(fa) .hero .eyebrow,
 html:lang(fa) .download-section > .eyebrow {
   font-size: 12px;
 }
-html:lang(fa) :is(
-  .demo-caption > span,
-  .hero-note,
-  .hero-sticker div > span,
-  .demo-stage-note,
-  .download-footnote
-) {
+html:lang(fa) :is(.demo-caption > span, .hero-note, .hero-sticker div > span, .demo-stage-note, .download-footnote) {
   font-size: 11px;
   line-height: 1.8;
 }
@@ -216,8 +201,15 @@ summary {
   font-size: 11px;
   transition: color 0.2s;
 }
-.locale-switch:hover { color: var(--foreground); }
-.header-actions { display: flex; align-items: center; justify-self: end; gap: 18px; }
+.locale-switch:hover {
+  color: var(--foreground);
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 18px;
+}
 .button {
   display: inline-flex;
   align-items: center;
@@ -284,9 +276,7 @@ summary {
   inset: 0;
   pointer-events: none;
   opacity: 0.45;
-  background-image:
-    linear-gradient(#ffffff06 1px, transparent 1px),
-    linear-gradient(90deg, #ffffff06 1px, transparent 1px);
+  background-image: linear-gradient(#ffffff06 1px, transparent 1px), linear-gradient(90deg, #ffffff06 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: linear-gradient(to right, transparent, #000);
 }
@@ -698,11 +688,7 @@ h2 span {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(
-    ellipse at 50% 70%,
-    color-mix(in srgb, var(--accent) 10%, transparent),
-    transparent 75%
-  );
+  background: radial-gradient(ellipse at 50% 70%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 75%);
   opacity: 0;
   transition: opacity 0.5s;
 }
@@ -1520,6 +1506,11 @@ details[open] > summary .icon {
   font-size: 12px;
   color: #90909c;
 }
+.footer-enamad img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
 .footer nav {
   display: flex;
   align-items: center;
@@ -1641,7 +1632,9 @@ details[open] > summary .icon {
   .header {
     height: 70px;
   }
-  .header-inner { grid-template-columns: 1fr auto; }
+  .header-inner {
+    grid-template-columns: 1fr auto;
+  }
   .brand {
     font-size: 23px;
   }
@@ -2080,19 +2073,65 @@ details[open] > summary .icon {
   outline-offset: -5px;
 }
 
-html[dir="rtl"] body { text-align: right; }
-html[dir="rtl"] .hero-content { padding: 65px 40px 100px 0; }
-html[dir="rtl"] .hero-visual { margin-left: 0; margin-right: -35px; }
-html[dir="rtl"] .hero .eyebrow, html[dir="rtl"] .hero-actions, html[dir="rtl"] .text-link, html[dir="rtl"] .store-button, html[dir="rtl"] .contact-section, html[dir="rtl"] .footer, html[dir="rtl"] .header-inner { direction: rtl; }
-html[dir="rtl"] .hero-actions, html[dir="rtl"] .store-links, html[dir="rtl"] .desktop-nav { flex-direction: row-reverse; }
-html[dir="rtl"] .feature-tabs button, html[dir="rtl"] .pricing-card li, html[dir="rtl"] .faq-list summary { direction: rtl; text-align: right; }
-html[dir="rtl"] .feature-tabs button > .icon:last-child, html[dir="rtl"] .text-link > .icon, html[dir="rtl"] .button > .icon, html[dir="rtl"] .apk-link > .icon { transform: scaleX(-1); }
-html[dir="rtl"] .together-copy { padding: 0 35px 0 0; }
-html[dir="rtl"] .circle-scene { direction: ltr; }
-html[dir="rtl"] .circle-scene .scene-label, html[dir="rtl"] .circle-scene .scene-chip, html[dir="rtl"] .circle-scene .group-center { direction: rtl; }
-html[dir="rtl"] .footer nav { direction: rtl; }
+html[dir="rtl"] body {
+  text-align: right;
+}
+html[dir="rtl"] .hero-content {
+  padding: 65px 40px 100px 0;
+}
+html[dir="rtl"] .hero-visual {
+  margin-left: 0;
+  margin-right: -35px;
+}
+html[dir="rtl"] .hero .eyebrow,
+html[dir="rtl"] .hero-actions,
+html[dir="rtl"] .text-link,
+html[dir="rtl"] .store-button,
+html[dir="rtl"] .contact-section,
+html[dir="rtl"] .footer,
+html[dir="rtl"] .header-inner {
+  direction: rtl;
+}
+html[dir="rtl"] .hero-actions,
+html[dir="rtl"] .store-links,
+html[dir="rtl"] .desktop-nav {
+  flex-direction: row-reverse;
+}
+html[dir="rtl"] .feature-tabs button,
+html[dir="rtl"] .pricing-card li,
+html[dir="rtl"] .faq-list summary {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="rtl"] .feature-tabs button > .icon:last-child,
+html[dir="rtl"] .text-link > .icon,
+html[dir="rtl"] .button > .icon,
+html[dir="rtl"] .apk-link > .icon {
+  transform: scaleX(-1);
+}
+html[dir="rtl"] .together-copy {
+  padding: 0 35px 0 0;
+}
+html[dir="rtl"] .circle-scene {
+  direction: ltr;
+}
+html[dir="rtl"] .circle-scene .scene-label,
+html[dir="rtl"] .circle-scene .scene-chip,
+html[dir="rtl"] .circle-scene .group-center {
+  direction: rtl;
+}
+html[dir="rtl"] .footer nav {
+  direction: rtl;
+}
 @media (max-width: 760px) {
-  html[dir="rtl"] .hero-content { padding-right: 28px; padding-left: 28px; }
-  html[dir="rtl"] .hero-visual { margin-right: 0; }
-  html[dir="rtl"] .together-copy { padding: 0; }
+  html[dir="rtl"] .hero-content {
+    padding-right: 28px;
+    padding-left: 28px;
+  }
+  html[dir="rtl"] .hero-visual {
+    margin-right: 0;
+  }
+  html[dir="rtl"] .together-copy {
+    padding: 0;
+  }
 }
