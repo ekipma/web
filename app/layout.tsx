@@ -13,19 +13,15 @@ const sans = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ekipma.ir"),
   title: "Ekipma — Share expenses. Take turns. Make plans.",
-  description:
-    "Less sorting. More living. Ekipma brings shared expenses, rotating responsibilities, and plans together for friends, dorms, and roommates.",
+  description: "Less sorting. More living. Ekipma brings shared expenses, rotating responsibilities, and plans together for friends, dorms, and roommates.",
   alternates: { canonical: "/" },
   icons: { icon: "/favicon.png", apple: "/favicon.png" },
   openGraph: {
     title: "Ekipma — Less sorting. More living.",
-    description:
-      "Share expenses. Take turns. Make plans. A little less admin for your people.",
+    description: "Share expenses. Take turns. Make plans. A little less admin for your people.",
     type: "website",
     locale: "en_US",
-    images: [
-      { url: "/thumbnail.jpeg", width: 400, height: 225, alt: "Ekipma" },
-    ],
+    images: [{ url: "/thumbnail.jpeg", width: 400, height: 225, alt: "Ekipma" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -33,16 +29,15 @@ export const metadata: Metadata = {
     description: "Share expenses. Take turns. Make plans.",
     images: ["/thumbnail.jpeg"],
   },
+  other: {
+    enamad: "58857417",
+  },
 };
 export const viewport: Viewport = {
   themeColor: "#09090b",
   colorScheme: "dark",
 };
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = (await headers()).get("x-ekipma-locale") === "fa" ? "fa" : "en";
   return (
     <html lang={locale} dir={locale === "fa" ? "rtl" : "ltr"} className={sans.variable}>
