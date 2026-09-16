@@ -7,6 +7,14 @@ import { FeatureDemo } from "./_components/feature-demo";
 import { site } from "./site-config";
 import { isLocale, messages, type Locale } from "./i18n";
 
+type EnamadImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  code?: string;
+};
+
+function EnamadImage(props: EnamadImageProps) {
+  return <img {...props} />;
+}
+
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ locale?: string }> }): Promise<Metadata> {
   const { locale: requestedLocale } = await searchParams;
   const locale = isLocale(requestedLocale) ? requestedLocale : "en";
@@ -26,9 +34,7 @@ function StoreLinks({ locale }: { locale: Locale }) {
             <Icon name={store === "googlePlay" ? "play" : "apple"} />
             <span>
               <small>{href ? copy.store.download : copy.store.soon}</small>
-              <strong>
-                {store === "googlePlay" ? "Google Play" : "App Store"}
-              </strong>
+              <strong>{store === "googlePlay" ? "Google Play" : "App Store"}</strong>
             </span>
           </>
         );
@@ -37,11 +43,7 @@ function StoreLinks({ locale }: { locale: Locale }) {
             {content}
           </a>
         ) : (
-          <div
-            key={store}
-            className="store-button unavailable"
-            aria-label={`${store === "googlePlay" ? "Google Play" : "App Store"}: coming soon`}
-          >
+          <div key={store} className="store-button unavailable" aria-label={`${store === "googlePlay" ? "Google Play" : "App Store"}: coming soon`}>
             {content}
           </div>
         );
@@ -73,9 +75,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               <br />
               <span>{copy.hero.title[1]}</span>
             </h1>
-            <p className="hero-description">
-              {copy.hero.description}
-            </p>
+            <p className="hero-description">{copy.hero.description}</p>
             <div className="hero-actions">
               <a href="#download" className="button primary">
                 {copy.hero.primary} <Icon name="download" />
@@ -84,9 +84,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
                 {copy.hero.secondary} <Icon name="arrow" />
               </a>
             </div>
-            <p className="hero-note">
-              {copy.hero.note}
-            </p>
+            <p className="hero-note">{copy.hero.note}</p>
           </div>
           <div className="hero-visual">
             <div className="hero-orbit orbit-one" aria-hidden="true" />
@@ -94,13 +92,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             <span className="visual-caption">
               <span className="tiny-cross">+</span> {copy.hero.caption}
             </span>
-            <Image
-              className="hero-phones"
-              src={phones}
-                alt="Ekipma app screens"
-              sizes="(max-width: 760px) 95vw, (max-width: 1200px) 55vw, 650px"
-              preload
-            />
+            <Image className="hero-phones" src={phones} alt="Ekipma app screens" sizes="(max-width: 760px) 95vw, (max-width: 1200px) 55vw, 650px" preload />
             <div className="hero-sticker">
               <span className="sticker-icon">
                 <Icon name="check" />
@@ -121,10 +113,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             </a>
           </div>
         </section>
-        <div
-          className="tri-slogan frame"
-          aria-label={copy.tri.join(" ")}
-        >
+        <div className="tri-slogan frame" aria-label={copy.tri.join(" ")}>
           <a href="#features" className="tone-pay">
             <Icon name="split" />
             <span>{copy.tri[0]}</span>
@@ -141,37 +130,23 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             <span className="slogan-number">03</span>
           </a>
         </div>
-        <section
-          id="features"
-          className="section frame features-section"
-          aria-labelledby="features-title"
-        >
+        <section id="features" className="section frame features-section" aria-labelledby="features-title">
           <div className="section-heading">
             <div>
-              <p className="eyebrow section-label">
-                {copy.features.label}
-              </p>
+              <p className="eyebrow section-label">{copy.features.label}</p>
               <h2 id="features-title">
                 {copy.features.title[0]}
                 <br />
                 <span>{copy.features.title[1]}</span>
               </h2>
             </div>
-            <p>
-              {copy.features.copy}
-            </p>
+            <p>{copy.features.copy}</p>
           </div>
           <FeatureDemo locale={locale} />
         </section>
-        <section
-          id="together"
-          className="together-section frame section"
-          aria-labelledby="together-title"
-        >
+        <section id="together" className="together-section frame section" aria-labelledby="together-title">
           <div className="together-copy">
-            <p className="eyebrow section-label">
-              {copy.together.label}
-            </p>
+            <p className="eyebrow section-label">{copy.together.label}</p>
             <h2 id="together-title">
               {copy.together.title[0]}
               <br />
@@ -179,33 +154,30 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               <br />
               <span>{copy.together.title[2]}</span>
             </h2>
-            <p>
-              {copy.together.copy}
-            </p>
+            <p>{copy.together.copy}</p>
             <a className="text-link" href="#download">
               {copy.together.cta} <Icon name="arrow" />
             </a>
           </div>
-          <div
-            className="circle-scene"
-            aria-label={copy.together.aria}
-          >
+          <div className="circle-scene" aria-label={copy.together.aria}>
             <div className="circle-ring ring-outer" />
             <div className="circle-ring ring-inner" />
-            <span className="scene-label label-top">
-              {copy.together.sceneLabel}
-            </span>
+            <span className="scene-label label-top">{copy.together.sceneLabel}</span>
             <div className="avatar avatar-one">
-              {locale === "fa" ? "ن" : "JD"}<span>{locale === "fa" ? "نیما" : "Jules"}</span>
+              {locale === "fa" ? "ن" : "JD"}
+              <span>{locale === "fa" ? "نیما" : "Jules"}</span>
             </div>
             <div className="avatar avatar-two">
-              {locale === "fa" ? "س" : "SK"}<span>{locale === "fa" ? "سارا" : "Sam"}</span>
+              {locale === "fa" ? "س" : "SK"}
+              <span>{locale === "fa" ? "سارا" : "Sam"}</span>
             </div>
             <div className="avatar avatar-three">
-              {locale === "fa" ? "ع" : "AL"}<span>{locale === "fa" ? "علی" : "Alex"}</span>
+              {locale === "fa" ? "ع" : "AL"}
+              <span>{locale === "fa" ? "علی" : "Alex"}</span>
             </div>
             <div className="avatar avatar-four">
-              {locale === "fa" ? "ت" : "YO"}<span>{locale === "fa" ? "تو" : "You"}</span>
+              {locale === "fa" ? "ت" : "YO"}
+              <span>{locale === "fa" ? "تو" : "You"}</span>
             </div>
             <div className="group-center">
               <Icon name="home" />
@@ -223,50 +195,32 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             <span className="scene-chip chip-two">
               <Icon name="calendar" /> {copy.together.movie}
             </span>
-            <span className="scene-label label-bottom">
-              {locale === "fa" ? "همون اکیپ، دردسر کمتر." : "SAME CREW. LESS COORDINATING."}
-            </span>
+            <span className="scene-label label-bottom">{locale === "fa" ? "همون اکیپ، دردسر کمتر." : "SAME CREW. LESS COORDINATING."}</span>
           </div>
         </section>
-        <section
-          id="pricing"
-          className="section frame pricing-section"
-          aria-labelledby="pricing-title"
-        >
+        <section id="pricing" className="section frame pricing-section" aria-labelledby="pricing-title">
           <div className="section-heading">
             <div>
-              <p className="eyebrow section-label">
-              {copy.pricing.label}
-              </p>
+              <p className="eyebrow section-label">{copy.pricing.label}</p>
               <h2 id="pricing-title">
                 {copy.pricing.title[0]}
                 <br />
                 <span>{copy.pricing.title[1]}</span>
               </h2>
             </div>
-            <p>
-              {copy.pricing.copy}
-            </p>
+            <p>{copy.pricing.copy}</p>
           </div>
           <div className="pricing-grid">
             {plans.map((plan, index) => (
-              <article
-                className={`pricing-card ${index === 1 ? "premium-card" : ""}`}
-                key={plan.name}
-              >
+              <article className={`pricing-card ${index === 1 ? "premium-card" : ""}`} key={plan.name}>
                 <div className="plan-name">
                   <h3>{plan.name}</h3>
-                  {index === 1 && (
-                    <span className="plan-badge">{copy.pricing.extra}</span>
-                  )}
+                  {index === 1 && <span className="plan-badge">{copy.pricing.extra}</span>}
                 </div>
                 <p className="plan-caption">{plan.caption}</p>
                 <div className="plan-price">{plan.price}</div>
                 <p className="plan-period">{plan.period}</p>
-                <a
-                  className={`button ${index === 1 ? "primary" : "secondary"}`}
-                  href={plan.href}
-                >
+                <a className={`button ${index === 1 ? "primary" : "secondary"}`} href={plan.href}>
                   {plan.cta}
                   <Icon name="arrow" />
                 </a>
@@ -286,15 +240,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               {copy.pricing.details}
               <Icon name="plus" />
             </summary>
-            <p>
-              {copy.pricing.detailsCopy}
-            </p>
+            <p>{copy.pricing.detailsCopy}</p>
           </details>
         </section>
-        <section
-          className="section frame faq-section"
-          aria-labelledby="faq-title"
-        >
+        <section className="section frame faq-section" aria-labelledby="faq-title">
           <div>
             <p className="eyebrow section-label">{copy.faq.label}</p>
             <h2 id="faq-title">{copy.faq.title}</h2>
@@ -311,19 +260,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             ))}
           </div>
         </section>
-        <section
-          id="download"
-          className="download-section frame"
-          aria-labelledby="download-title"
-        >
+        <section id="download" className="download-section frame" aria-labelledby="download-title">
           <div className="download-glow" aria-hidden="true" />
-          <Image
-            src="/images/app-logo.svg"
-            width={64}
-            height={64}
-            alt=""
-            className="download-logo"
-          />
+          <Image src="/images/app-logo.svg" width={64} height={64} alt="" className="download-logo" />
           <p className="eyebrow">{copy.download.eyebrow}</p>
           <h2 id="download-title">
             {copy.download.title[0]}
@@ -337,9 +276,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
               {copy.download.apk} <Icon name="arrow" />
             </a>
           )}
-          <span className="download-footnote">
-            {copy.download.footnote}
-          </span>
+          <span className="download-footnote">{copy.download.footnote}</span>
         </section>
         <section id="contact" className="contact-section frame">
           <div>
@@ -347,10 +284,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             <p>{copy.contact.copy}</p>
           </div>
           {site.contactEmail ? (
-            <a
-              className="button secondary"
-              href={`mailto:${site.contactEmail}`}
-            >
+            <a className="button secondary" href={`mailto:${site.contactEmail}`}>
               {copy.contact.cta} <Icon name="arrow" />
             </a>
           ) : (
@@ -365,8 +299,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ l
             ekipma<span className="brand-dot">.</span>
           </span>
         </a>
-        <span className="footer-caption">
-          {copy.footer}
+        <span className="footer-caption">{copy.footer}</span>
+        <span className="footer-enamad">
+          <a referrerPolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id=7773843&Code=LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD">
+            <EnamadImage referrerPolicy="origin" src="https://trustseal.enamad.ir/logo.aspx?id=7773843&Code=LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" alt="" style={{ cursor: "pointer", objectFit: "contain" }} code="LVroMJCdlxR0crtrWdbbnEDB5Azo5mdD" width={80} height={80} />
+          </a>
         </span>
         <nav aria-label="Footer">
           <a href="#features">{copy.nav.features}</a>
