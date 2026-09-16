@@ -115,14 +115,55 @@ summary {
   justify-content: center;
   width: 56px;
 }
-.payment-result[data-tone="success"] .payment-mark { background: #2ebf9120; border-color: #2ebf9155; color: var(--plan); }
-.payment-result[data-tone="failure"] .payment-mark { background: #e9438c20; border-color: #e9438c55; color: var(--pay); }
-.payment-result-label { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-top: 24px; }
-.payment-result h1 { font-size: clamp(28px, 5vw, 38px); line-height: 1.1; margin-top: 12px; }
-.payment-result-card > p:not(.payment-result-label) { color: var(--muted); line-height: 1.7; margin: 14px auto 0; max-width: 330px; }
-.payment-result-actions { align-items: center; display: flex; flex-direction: column; gap: 16px; margin-top: 30px; }
-.payment-result-button { background: var(--lavender); border-radius: 12px; color: #17151f; font-weight: 750; padding: 13px 20px; width: 100%; }
-.payment-result-retry { color: var(--muted); font-size: 14px; text-decoration: underline; text-underline-offset: 4px; }
+.payment-result[data-tone="success"] .payment-mark {
+  background: #2ebf9120;
+  border-color: #2ebf9155;
+  color: var(--plan);
+}
+.payment-result[data-tone="failure"] .payment-mark {
+  background: #e9438c20;
+  border-color: #e9438c55;
+  color: var(--pay);
+}
+.payment-result-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-top: 24px;
+}
+.payment-result h1 {
+  font-size: clamp(28px, 5vw, 38px);
+  line-height: 1.1;
+  margin-top: 12px;
+}
+.payment-result-card > p:not(.payment-result-label) {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 14px auto 0;
+  max-width: 330px;
+}
+.payment-result-actions {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 30px;
+}
+.payment-result-button {
+  background: var(--lavender);
+  border-radius: 12px;
+  color: #17151f;
+  font-weight: 750;
+  padding: 13px 20px;
+  width: 100%;
+}
+.payment-result-retry {
+  color: var(--muted);
+  font-size: 14px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 button:disabled {
   cursor: default;
 }
@@ -1545,16 +1586,21 @@ details[open] > summary .icon {
   font-size: 12px;
   color: #90909c;
 }
+.footer-enamad {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
 .footer-enamad img {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   object-fit: contain;
 }
 .footer nav {
   display: flex;
   align-items: center;
   gap: 23px;
-  margin-left: auto;
   font-size: 12px;
   color: #b1b1bb;
 }
