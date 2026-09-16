@@ -29,9 +29,6 @@ export const metadata: Metadata = {
     description: "Share expenses. Take turns. Make plans.",
     images: ["/thumbnail.jpeg"],
   },
-  other: {
-    enamad: "58857417",
-  },
 };
 export const viewport: Viewport = {
   themeColor: "#09090b",
