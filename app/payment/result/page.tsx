@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -39,16 +40,31 @@ export default async function PaymentResult({ searchParams }: { searchParams: Pr
   const view = presentation(result);
   const refresh = view.tone === "pending";
   return (
-    <main className="payment-result" data-tone={view.tone}>
+    <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_50%_0%,#30264f_0%,var(--background)_48%)] p-6">
       {refresh && <meta httpEquiv="refresh" content="4" />}
-      <section className="payment-result-card" aria-live="polite">
-        <span className="payment-mark" aria-hidden="true">{view.tone === "success" ? "✓" : view.tone === "pending" ? "…" : "!"}</span>
-        <p className="payment-result-label">EKIPMA PAYMENT</p>
-        <h1>{view.title}</h1>
-        <p>{view.body}</p>
-        <div className="payment-result-actions">
-          <Link href="/fa" className="payment-result-button">Return to Ekipma</Link>
-          {refresh && <Link href={`/payment/result?purchase=${encodeURIComponent(purchase)}&receipt=${encodeURIComponent(receipt)}`} className="payment-result-retry">Refresh now</Link>}
+      <section className="max-w-112.5 rounded-3xl border border-line bg-[#121217] px-8.5 py-11 text-center shadow-[0_24px_80px_#0008]" aria-live="polite">
+        <span
+          className={cn("inline-flex size-14 items-center justify-center rounded-full border text-[28px] font-bold", {
+            "border-[#2ebf9155] bg-[#2ebf9120] text-plan": view.tone === "success",
+            "border-[#e9438c55] bg-[#e9438c20] text-pay": view.tone === "failure",
+            "border-[#a18fff55] bg-[#a18fff20] text-lavender": view.tone === "pending",
+          })}
+          aria-hidden="true"
+        >
+          {view.tone === "success" ? "✓" : view.tone === "pending" ? "…" : "!"}
+        </span>
+        <p className="mt-6 text-[11px] font-bold tracking-[1.5px] text-site-muted">EKIPMA PAYMENT</p>
+        <h1 className="mt-3 text-[clamp(28px,5vw,38px)] leading-[1.1]">{view.title}</h1>
+        <p className="mx-auto mt-3.5 max-w-82.5 leading-[1.7] text-site-muted">{view.body}</p>
+        <div className="mt-7.5 flex flex-col items-center gap-4">
+          <Link href="/fa" className="w-full rounded-[12px] bg-lavender px-5 py-[13px] font-[750] text-[#17151f]">
+            Return to Ekipma
+          </Link>
+          {refresh && (
+            <Link href={`/payment/result?purchase=${encodeURIComponent(purchase)}&receipt=${encodeURIComponent(receipt)}`} className="text-[14px] text-site-muted underline underline-offset-4">
+              Refresh now
+            </Link>
+          )}
         </div>
       </section>
     </main>

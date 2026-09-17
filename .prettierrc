@@ -1,4 +1,7 @@
 {
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindStylesheet": "./app/globals.css",
+  "tailwindFunctions": ["cn", "cva"],
   "printWidth": 320,
   "tabWidth": 2,
   "useTabs": false,
