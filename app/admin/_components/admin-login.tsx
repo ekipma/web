@@ -23,32 +23,32 @@ export function AdminLogin() {
   }
   return (
     <main className="grid min-h-screen place-items-center bg-background bg-[radial-gradient(circle_at_50%_0,#a18fff18,transparent_36%)] p-6">
-      <form className="grid w-full max-w-[390px] gap-5.5 rounded-[14px] border border-[#30313a] bg-card p-7.5 shadow-[0_24px_70px_#00000045]" onSubmit={submit}>
-        <div className="flex items-center gap-[9px] text-[22px] font-[750] tracking-[-1px] text-[#f6f5f9]">
+      <form className="grid w-full max-w-sm gap-5.5 rounded-2xl border border-input bg-card p-7.5 shadow-2xl" onSubmit={submit}>
+        <div className="flex items-center gap-2.5 text-[1.375rem] font-[750] tracking-[-0.0625rem] text-admin-ink">
           <Image className="grayscale" src="/images/app-logo.svg" width={38} height={38} alt="Ekipma" />
           <span>
-            ekipma<span className="text-ring">.</span>
+            ekipma<span className="text-admin-violet">.</span>
           </span>
         </div>
         <div>
-          <div className="font-[Arial,sans-serif] text-[9px] leading-normal font-bold tracking-[1.25px] text-[#888998]">INTERNAL ACCESS</div>
-          <h1 className="mt-2 mb-1.5 text-[25px] tracking-[-1px]">Admin sign in</h1>
-          <p className="text-[12px] leading-[1.6] text-[#989aa5]">Use an account assigned the Ekipma Admin role.</p>
+          <div className="font-[Arial,sans-serif] text-[0.5625rem] leading-normal font-bold tracking-[0.078rem] text-admin-ink-faint">INTERNAL ACCESS</div>
+          <h1 className="mt-2 mb-1.5 text-2xl tracking-[-0.0625rem]">Admin sign in</h1>
+          <p className="text-xs leading-[1.6] text-admin-ink-muted">Use an account assigned the Ekipma Admin role.</p>
         </div>
-        <label className="grid gap-[7px] text-[11px] font-semibold text-[#c6c7ce]">
+        <label className="grid gap-2 text-[0.6875rem] font-semibold text-admin-ink-muted">
           Mobile number
           <Input className="h-10" name="mobile" type="tel" autoComplete="tel" placeholder="+98 912 000 0000" required />
         </label>
-        <label className="grid gap-[7px] text-[11px] font-semibold text-[#c6c7ce]">
+        <label className="grid gap-2 text-[0.6875rem] font-semibold text-admin-ink-muted">
           Password
           <Input className="h-10" name="password" type="password" autoComplete="current-password" required />
         </label>
         {error && (
-          <p className="rounded-[7px] border border-[#e85c7b55] bg-[#e85c7b13] px-2.5 py-[9px] text-[12px] leading-[1.6] text-[#ff9bb4]" role="alert">
+          <p className="rounded-lg border border-admin-rose/30 bg-admin-rose-soft px-2.5 py-2.5 text-xs leading-[1.6] text-admin-rose" role="alert">
             {error}
           </p>
         )}
-        <Button className="h-[41px] [&_svg]:w-[15px]" type="submit" disabled={pending}>
+        <Button className="h-10 [&_svg]:w-4" type="submit" disabled={pending}>
           {pending ? (
             "Signing in…"
           ) : (

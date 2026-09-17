@@ -55,6 +55,31 @@ html:lang(fa) .demo-caption {
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
+  --color-admin-ink: var(--admin-ink);
+  --color-admin-ink-soft: var(--admin-ink-soft);
+  --color-admin-ink-muted: var(--admin-ink-muted);
+  --color-admin-ink-faint: var(--admin-ink-faint);
+  --color-admin-panel: var(--admin-panel);
+  --color-admin-panel-soft: var(--admin-panel-soft);
+  --color-admin-panel-muted: var(--admin-panel-muted);
+  --color-admin-line: var(--admin-line);
+  --color-admin-line-soft: var(--admin-line-soft);
+  --color-admin-violet: var(--admin-violet);
+  --color-admin-violet-soft: var(--admin-violet-soft);
+  --color-admin-violet-tint: var(--admin-violet-tint);
+  --color-admin-violet-ink: var(--admin-violet-ink);
+  --color-admin-cyan: var(--admin-cyan);
+  --color-admin-cyan-soft: var(--admin-cyan-soft);
+  --color-admin-cyan-tint: var(--admin-cyan-tint);
+  --color-admin-green: var(--admin-green);
+  --color-admin-green-soft: var(--admin-green-soft);
+  --color-admin-green-tint: var(--admin-green-tint);
+  --color-admin-amber: var(--admin-amber);
+  --color-admin-amber-soft: var(--admin-amber-soft);
+  --color-admin-amber-tint: var(--admin-amber-tint);
+  --color-admin-rose: var(--admin-rose);
+  --color-admin-rose-soft: var(--admin-rose-soft);
+  --color-admin-rose-tint: var(--admin-rose-tint);
   --font-sans: var(--font-sans-local), Arial, Helvetica, sans-serif;
 }
 @layer base {
