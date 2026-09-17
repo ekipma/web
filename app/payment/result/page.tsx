@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { apiBaseUrl } from "@/lib/api-config";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -12,9 +13,8 @@ export const metadata: Metadata = {
 type PurchaseResult = { quantity: string; status: string };
 
 async function readResult(purchase: string, receipt: string): Promise<PurchaseResult | null> {
-  const apiBase = process.env.EKIPMA_API_URL;
-  if (!apiBase || !purchase || !receipt) return null;
-  const url = new URL(`/payments/token-purchases/${encodeURIComponent(purchase)}/result`, apiBase);
+  if (!purchase || !receipt) return null;
+  const url = new URL(`/payments/token-purchases/${encodeURIComponent(purchase)}/result`, apiBaseUrl);
   url.searchParams.set("receipt", receipt);
   const response = await fetch(url, { cache: "no-store" }).catch(() => null);
   if (!response?.ok) return null;

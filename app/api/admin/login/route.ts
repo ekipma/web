@@ -1,4 +1,5 @@
-import { adminFetch, apiBaseUrl, setAdminAuthCookies } from "@/lib/admin-api";
+import { adminFetch, setAdminAuthCookies } from "@/lib/admin-api";
+import { apiBaseUrl } from "@/lib/api-config";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {

@@ -3,7 +3,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export const apiBaseUrl = process.env.EKIPMA_API_URL ?? "http://127.0.0.1:8086";
+import { apiBaseUrl } from "@/lib/api-config";
 const apiVersion = "v0.8.1";
 const accessCookie = "ekipma_admin_access";
 const refreshCookie = "ekipma_admin_refresh";
