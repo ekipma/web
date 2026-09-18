@@ -138,7 +138,7 @@ function DataTable({ children, className }: { children: React.ReactNode; classNa
   return (
     <table
       className={cn(
-        "w-full border-collapse text-left max-mobile:min-w-164 [&_.button]:text-admin-ink-muted [&_tbody_tr:hover]:bg-white/5 [&_td]:border-b [&_td]:border-b-admin-line [&_td]:px-4 [&_td]:py-3 [&_td]:text-[0.6875rem] [&_td]:text-admin-ink-soft [&_th]:border-b [&_th]:border-b-admin-line-soft [&_th]:px-4 [&_th]:py-3 [&_th]:font-sans [&_th]:text-[0.5625rem] [&_th]:font-bold [&_th]:tracking-[0.044rem] [&_th]:text-admin-ink-faint [&_tr:last-child_td]:border-b-0",
+        "w-full border-collapse text-left max-mobile:min-w-164 [&_.button]:text-admin-ink-muted [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-admin-panel-soft [&_td]:border-b [&_td]:border-b-admin-line [&_td]:px-4 [&_td]:py-3 [&_td]:text-[0.6875rem] [&_td]:text-admin-ink-soft [&_th]:border-b [&_th]:border-b-admin-line-soft [&_th]:px-4 [&_th]:py-3 [&_th]:font-sans [&_th]:text-[0.5625rem] [&_th]:font-bold [&_th]:tracking-[0.044rem] [&_th]:text-admin-ink-faint [&_tr:last-child_td]:border-b-0",
         className
       )}
     >
