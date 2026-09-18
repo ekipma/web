@@ -23,7 +23,7 @@ export function AdminLogin() {
   }
   return (
     <main className="grid min-h-screen place-items-center bg-background bg-[radial-gradient(circle_at_50%_0,#a18fff18,transparent_36%)] p-6">
-      <form className="grid w-full max-w-sm gap-5.5 rounded-2xl border border-input bg-card p-7.5 shadow-2xl" onSubmit={submit}>
+      <form method="post" action="/admin/login" className="grid w-full max-w-sm gap-5.5 rounded-2xl border border-input bg-card p-7.5 shadow-2xl" onSubmit={submit}>
         <div className="flex items-center gap-2.5 text-[1.375rem] font-[750] tracking-[-0.0625rem] text-admin-ink">
           <Image className="grayscale" src="/images/app-logo.svg" width={38} height={38} alt="Ekipma" />
           <span>
