@@ -808,7 +808,7 @@ export function AdminShell({ currentUser, children }: { currentUser: AdminUser; 
   }
 
   const navItems = (mobile = false) => (
-    <nav className={mobile ? "max-mobile:mt-9 max-mobile:grid max-mobile:gap-1.5 max-mobile:self-start" : "grid gap-1"} aria-label="Admin sections">
+    <nav className={mobile ? "max-mobile:mt-9 max-mobile:grid max-mobile:gap-1.5 max-mobile:self-start" : "grid gap-1 max-admin-tablet:w-full"} aria-label="Admin sections">
       {navigation.map((item) => {
         const Icon = item.icon;
         return (
@@ -817,13 +817,18 @@ export function AdminShell({ currentUser, children }: { currentUser: AdminUser; 
             href={item.href}
             className={cn(
               "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs text-admin-ink-muted no-underline hover:bg-admin-panel-muted hover:text-admin-ink [&_.badge]:ml-auto [&_.badge]:py-px [&_.badge]:text-[0.5rem] [&_svg]:h-4 [&_svg]:w-4",
-              activeItem.label === item.label && "bg-secondary text-admin-violet-ink ring-1 ring-admin-violet/20 ring-inset [&_svg]:text-admin-violet"
+              !mobile && "max-admin-tablet:justify-center max-admin-tablet:px-0",
+              activeItem.label === item.label && "bg-secondary text-admin-violet-ink ring-1 ring-admin-violet/20 ring-inset max-admin-tablet:bg-admin-violet-soft [&_svg]:text-admin-violet"
             )}
             onClick={() => setMobileNavOpen(false)}
           >
             <Icon />
-            <span>{item.label}</span>
-            {item.label === "Audit log" && <Badge variant="outline">Soon</Badge>}
+            <span className={cn(!mobile && "max-admin-tablet:hidden")}>{item.label}</span>
+            {item.label === "Audit log" && (
+              <Badge className={cn(!mobile && "max-admin-tablet:hidden")} variant="outline">
+                Soon
+              </Badge>
+            )}
           </Link>
         );
       })}
@@ -839,58 +844,60 @@ export function AdminShell({ currentUser, children }: { currentUser: AdminUser; 
           aria-label="Ekipma admin home"
         >
           <Image src="/images/app-logo.svg" width={30} height={30} alt="" />
-          <span>
+          <span className="max-admin-tablet:hidden">
             ekipma<span>.</span>
           </span>
-          <em>ADMIN</em>
+          <em className="max-admin-tablet:hidden">ADMIN</em>
         </Link>
-        <div className="mt-8 mr-1 mb-4.5 ml-1 max-admin-tablet:mx-0 max-admin-tablet:mt-8 max-admin-tablet:mb-4.5 [&_button]:flex [&_button]:w-full [&_button]:items-center [&_button]:gap-2.5 [&_button]:rounded-lg [&_button]:border-0 [&_button]:bg-transparent [&_button]:px-2 [&_button]:py-2 [&_button]:text-left [&_button]:text-xs [&_button]:text-admin-ink-soft [&_button_svg]:w-3.5 [&_button_svg]:text-admin-ink-faint [&_button:hover]:bg-admin-panel-muted [&_strong]:flex-1 [&_strong]:font-medium [&>span]:block [&>span]:px-2 [&>span]:pb-2 [&>span]:font-sans [&>span]:text-[0.5625rem] [&>span]:font-bold [&>span]:tracking-[0.069rem] [&>span]:text-admin-ink-faint">
-          <span>WORKSPACE</span>
+        <div className="mt-8 mr-1 mb-4.5 ml-1 max-admin-tablet:mx-0 max-admin-tablet:mt-8 max-admin-tablet:mb-4.5 [&_button]:flex [&_button]:w-full [&_button]:items-center [&_button]:gap-2.5 [&_button]:rounded-lg [&_button]:border-0 [&_button]:bg-transparent [&_button]:px-2 [&_button]:py-2 [&_button]:text-left [&_button]:text-xs [&_button]:text-admin-ink-soft max-admin-tablet:[&_button]:justify-center max-admin-tablet:[&_button]:px-0 [&_button_svg]:w-3.5 [&_button_svg]:text-admin-ink-faint [&_button:hover]:bg-admin-panel-muted [&_strong]:flex-1 [&_strong]:font-medium [&>span]:block [&>span]:px-2 [&>span]:pb-2 [&>span]:font-sans [&>span]:text-[0.5625rem] [&>span]:font-bold [&>span]:tracking-[0.069rem] [&>span]:text-admin-ink-faint max-admin-tablet:[&>span]:hidden">
+          <span className="max-admin-tablet:hidden">WORKSPACE</span>
           <button>
             <span className="grid h-6 w-6 place-items-center rounded-md bg-[linear-gradient(135deg,#c3b9ff,#7567bb)] text-xs font-extrabold text-primary-foreground">E</span>
-            <strong>Ekipma</strong>
-            <ChevronsUpDown />
+            <strong className="max-admin-tablet:hidden">Ekipma</strong>
+            <ChevronsUpDown className="max-admin-tablet:hidden" />
           </button>
         </div>
         {navItems()}
-        <div className="mt-auto grid gap-1 max-admin-tablet:w-full max-admin-tablet:items-center [&>a]:flex [&>a]:items-center [&>a]:gap-2.5 [&>a]:rounded-lg [&>a]:border-0 [&>a]:bg-transparent [&>a]:px-2.5 [&>a]:py-2 [&>a]:text-left [&>a]:text-[0.6875rem] [&>a]:text-admin-ink-muted [&>a_svg:first-child]:w-4 [&>a_svg:last-child]:ml-auto [&>a_svg:last-child]:w-3 [&>a:hover]:bg-admin-panel-muted [&>a:hover]:text-admin-ink [&>button]:flex [&>button]:items-center [&>button]:gap-2.5 [&>button]:rounded-lg [&>button]:border-0 [&>button]:bg-transparent [&>button]:px-2.5 [&>button]:py-2 [&>button]:text-left [&>button]:text-[0.6875rem] [&>button]:text-admin-ink-muted [&>button_svg]:w-4 [&>button:hover]:bg-admin-panel-muted [&>button:hover]:text-admin-ink">
+        <div className="mt-auto grid gap-1 max-admin-tablet:w-full max-admin-tablet:items-center [&>a]:flex [&>a]:items-center [&>a]:gap-2.5 [&>a]:rounded-lg [&>a]:border-0 [&>a]:bg-transparent [&>a]:px-2.5 [&>a]:py-2 [&>a]:text-left [&>a]:text-[0.6875rem] [&>a]:text-admin-ink-muted max-admin-tablet:[&>a]:justify-center max-admin-tablet:[&>a]:px-0 [&>a_svg:first-child]:w-4 [&>a_svg:last-child]:ml-auto [&>a_svg:last-child]:w-3 [&>a:hover]:bg-admin-panel-muted [&>a:hover]:text-admin-ink [&>button]:flex [&>button]:items-center [&>button]:gap-2.5 [&>button]:rounded-lg [&>button]:border-0 [&>button]:bg-transparent [&>button]:px-2.5 [&>button]:py-2 [&>button]:text-left [&>button]:text-[0.6875rem] [&>button]:text-admin-ink-muted max-admin-tablet:[&>button]:justify-center max-admin-tablet:[&>button]:px-0 [&>button_svg]:w-4 [&>button:hover]:bg-admin-panel-muted [&>button:hover]:text-admin-ink">
           <a href="/" target="_blank">
             <PanelLeft />
-            <span>View landing</span>
-            <ArrowUpRight />
+            <span className="max-admin-tablet:hidden">View landing</span>
+            <ArrowUpRight className="max-admin-tablet:hidden" />
           </a>
           <button>
-            <LifeBuoy /> Help & docs
+            <LifeBuoy /> <span className="max-admin-tablet:hidden">Help &amp; docs</span>
           </button>
           <div className="mt-2.5 flex items-center gap-2 border-t border-t-admin-line pt-3 pr-2 pb-0 pl-2 max-admin-tablet:w-full max-admin-tablet:justify-center max-admin-tablet:px-0 [&_.button]:p-0 [&_.button_svg]:w-4 [&_div>span]:mt-0.5 [&_div>span]:block [&_div>span]:overflow-hidden [&_div>span]:text-[0.5625rem] [&_div>span]:text-ellipsis [&_div>span]:whitespace-nowrap [&_div>span]:text-admin-ink-faint [&_strong]:block [&_strong]:overflow-hidden [&_strong]:text-[0.6875rem] [&_strong]:font-semibold [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&>div]:min-w-0 [&>div]:flex-1">
             <span className="grid h-7 w-7 flex-none place-items-center rounded-full bg-secondary text-[0.5625rem] font-bold text-admin-violet-ink max-admin-tablet:h-8 max-admin-tablet:w-8">{initials}</span>
-            <div>
+            <div className="max-admin-tablet:hidden">
               <strong>{currentUser.name}</strong>
               <span>Administrator</span>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost" aria-label="Open account menu">
-                  <Ellipsis />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Administrator account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <Settings2 /> Preferences
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={async () => {
-                    await fetch("/api/admin/logout", { method: "POST" });
-                    router.replace("/admin/login");
-                    router.refresh();
-                  }}
-                >
-                  <LogOut /> Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="max-admin-tablet:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost" aria-label="Open account menu">
+                    <Ellipsis />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Administrator account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Settings2 /> Preferences
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await fetch("/api/admin/logout", { method: "POST" });
+                      router.replace("/admin/login");
+                      router.refresh();
+                    }}
+                  >
+                    <LogOut /> Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </aside>

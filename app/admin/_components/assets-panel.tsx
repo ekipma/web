@@ -81,7 +81,7 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
   }
 
   return (
-    <section className="grid gap-6">
+    <section className="grid gap-5">
       <PageHeading />
       {error && (
         <div role="alert" className="rounded-lg border border-admin-rose/35 bg-admin-rose-soft px-4 py-3 text-sm text-admin-rose">
@@ -113,13 +113,7 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
         </CardContent>
       </Card>
       <Card>
-        <CardHeader className="border-b border-admin-line">
-          <div>
-            <CardTitle>Asset catalog</CardTitle>
-            <CardDescription>Update token prices or remove an item from sale without affecting existing owners.</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="overflow-x-auto p-1 pt-0 max-mobile:px-0">
+        <CardContent className="overflow-x-auto p-1 max-mobile:px-0">
           <table className="w-full min-w-[46rem] text-left text-sm">
             <thead>
               <tr className="border-b border-admin-line text-xs font-medium tracking-wide text-admin-ink-muted uppercase">
@@ -182,10 +176,12 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
 
 function PageHeading() {
   return (
-    <div>
-      <p className="text-xs tracking-[0.18em] text-admin-ink-muted uppercase">Catalog</p>
-      <h1>Assets</h1>
-      <p>Set token prices and control what users can buy.</p>
+    <div className="flex items-end justify-between gap-6 max-mobile:grid max-mobile:items-start [&_h1]:mt-2 [&_h1]:mb-1.5 [&_h1]:text-[1.6875rem] [&_h1]:font-semibold [&_h1]:tracking-[-0.069rem] [&_h1]:text-admin-ink [&_p]:text-xs [&_p]:text-admin-ink-muted">
+      <div>
+        <div className="font-sans text-[0.5625rem] leading-normal font-bold tracking-[0.078rem] text-admin-ink-faint">CATALOG</div>
+        <h1>Assets</h1>
+        <p>Set token prices and control what users can buy.</p>
+      </div>
     </div>
   );
 }
