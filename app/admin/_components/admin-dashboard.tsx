@@ -218,19 +218,31 @@ export function UsersTable({ users, total }: { users: User[]; total: number }) {
   const [pending, setPending] = useState<string | null>(null);
   const filtered = useMemo(() => rows.filter((user) => `${user.name} ${user.phone} ${user.email}`.toLowerCase().includes(query.toLowerCase())), [query, rows]);
   async function updateRole(user: User, role: number) {
-    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/role`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) });
-    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, role } : item)); else alert("Unable to update role."); setPending(null);
+    setPending(user.id);
+    const response = await fetch(`/api/admin/users/${user.id}/role`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) });
+    if (response.ok) setRows((current) => current.map((item) => (item.id === user.id ? { ...item, role } : item)));
+    else alert("Unable to update role.");
+    setPending(null);
   }
   async function addTokens(user: User) {
-    const value = Number(window.prompt(`Tokens to add for ${user.name}`, "10")); if (!Number.isInteger(value) || value <= 0) return;
-    const reason = window.prompt("Reason for this grant", "Admin adjustment"); if (!reason?.trim()) return;
-    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/tokens`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: value, reason }) });
-    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, tokens: item.tokens + value } : item)); else alert("Unable to add tokens."); setPending(null);
+    const value = Number(window.prompt(`Tokens to add for ${user.name}`, "10"));
+    if (!Number.isInteger(value) || value <= 0) return;
+    const reason = window.prompt("Reason for this grant", "Admin adjustment");
+    if (!reason?.trim()) return;
+    setPending(user.id);
+    const response = await fetch(`/api/admin/users/${user.id}/tokens`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: value, reason }) });
+    if (response.ok) setRows((current) => current.map((item) => (item.id === user.id ? { ...item, tokens: item.tokens + value } : item)));
+    else alert("Unable to add tokens.");
+    setPending(null);
   }
   async function updateMembership(user: User, type: string) {
-    const expiresAt = type === "normal" ? null : window.prompt("Expiration (ISO date/time)", user.expiresAt || new Date(Date.now() + 30 * 86400000).toISOString()); if (type !== "normal" && !expiresAt) return;
-    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/membership`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, expiresAt }) });
-    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, planType: type, plan: type === "normal" ? "Free" : "Premium", expiresAt } : item)); else alert("Unable to update membership."); setPending(null);
+    const expiresAt = type === "normal" ? null : window.prompt("Expiration (ISO date/time)", user.expiresAt || new Date(Date.now() + 30 * 86400000).toISOString());
+    if (type !== "normal" && !expiresAt) return;
+    setPending(user.id);
+    const response = await fetch(`/api/admin/users/${user.id}/membership`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, expiresAt }) });
+    if (response.ok) setRows((current) => current.map((item) => (item.id === user.id ? { ...item, planType: type, plan: type === "normal" ? "Free" : "Premium", expiresAt } : item)));
+    else alert("Unable to update membership.");
+    setPending(null);
   }
   return (
     <section className="grid gap-6">
@@ -278,9 +290,25 @@ export function UsersTable({ users, total }: { users: User[]; total: number }) {
                       </div>
                     </PersonRow>
                   </td>
-                  <td><select disabled={pending === user.id} value={user.planType} onChange={(event) => updateMembership(user, event.target.value)} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs"><option value="normal">Normal</option><option value="premium">Premium</option><option value="god">God</option></select></td>
-                  <td><select disabled={pending === user.id} value={String(user.role)} onChange={(event) => updateRole(user, Number(event.target.value))} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs"><option value="0">Member</option><option value="2">Operator</option><option value="3">Admin</option></select></td>
-                  <td><button disabled={pending === user.id} onClick={() => addTokens(user)} className="text-admin-violet hover:underline">{user.tokens.toLocaleString()} +</button></td>
+                  <td>
+                    <select disabled={pending === user.id} value={user.planType} onChange={(event) => updateMembership(user, event.target.value)} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs">
+                      <option value="normal">Normal</option>
+                      <option value="premium">Premium</option>
+                      <option value="god">God</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select disabled={pending === user.id} value={String(user.role)} onChange={(event) => updateRole(user, Number(event.target.value))} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs">
+                      <option value="0">Member</option>
+                      <option value="2">Operator</option>
+                      <option value="3">Admin</option>
+                    </select>
+                  </td>
+                  <td>
+                    <button disabled={pending === user.id} onClick={() => addTokens(user)} className="text-admin-violet hover:underline">
+                      {user.tokens.toLocaleString()} +
+                    </button>
+                  </td>
                   <td>{user.joined}</td>
                   <td>
                     <Badge variant="success">
@@ -1154,7 +1182,7 @@ export function Overview({ overview: initialOverview, adminName, users, total, g
           <AdminCardHeader compact>
             <div>
               <CardTitle>Collaboration activity</CardTitle>
-              <CardDescription>Distinct groups with records · {overview?.periodDays ?? 30}-day window</CardDescription>
+              <CardDescription>Records created · {overview?.periodDays ?? 30}-day window</CardDescription>
             </div>
             <Badge variant="outline">12 intervals</Badge>
           </AdminCardHeader>
@@ -1170,7 +1198,7 @@ export function Overview({ overview: initialOverview, adminName, users, total, g
             </div>
             <div
               className="mt-5.5 flex h-40 items-end gap-[5.5%] border-b border-b-admin-line-soft px-2 py-0 max-mobile:h-30 [&_i]:block [&_i]:h-[17%] [&_i]:w-full [&_i]:rounded-t [&_i]:bg-white/10 [&_span]:flex [&_span]:w-[4.1%] [&_span]:min-w-2 [&_span]:items-end [&_span]:rounded-t [&_span]:bg-[linear-gradient(#8073cf,#3c375a)] [&_span]:opacity-65 [&_span.is-latest]:bg-[linear-gradient(#c0b7ff,#7168af)] [&_span.is-latest]:opacity-100 [&_span.is-latest]:shadow-[0_-4px_18px_var(--admin-violet)]"
-              aria-label="Active groups chart"
+              aria-label="Records created chart"
             >
               {overview?.collaborationChart.map((point, index) => (
                 <span key={point.start} title={`${new Date(point.start).toLocaleDateString()}: ${point.value}`} style={{ height: `${Math.max(4, (point.value / chartMax) * 100)}%` }} className={index === overview.collaborationChart.length - 1 ? "is-latest" : ""}>
@@ -1226,7 +1254,7 @@ export function Overview({ overview: initialOverview, adminName, users, total, g
                   return (
                     <div
                       key={event.id}
-                      className="grid grid-cols-[1.875rem_minmax(0,_1fr)_auto_1.5rem] items-center gap-2.5 border-b border-b-admin-line px-0 py-2.5 last:border-b-0 max-mobile:grid-cols-[1.875rem_minmax(0,_1fr)_1.5rem] [&_.badge]:text-[0.5rem] [&_span:not([class])]:mt-1 [&_span:not([class])]:block [&_span:not([class])]:overflow-hidden [&_span:not([class])]:text-[0.5625rem] [&_span:not([class])]:text-ellipsis [&_span:not([class])]:whitespace-nowrap [&_span:not([class])]:text-admin-ink-faint [&_strong]:block [&_strong]:overflow-hidden [&_strong]:text-[0.6875rem] [&_strong]:font-medium [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-admin-ink-soft [&_time]:text-[0.5625rem] [&_time]:text-admin-ink-faint"
+                      className="grid grid-cols-[1.875rem_minmax(0,1fr)_auto_1.5rem] items-center gap-2.5 border-b border-b-admin-line px-0 py-2.5 last:border-b-0 max-mobile:grid-cols-[1.875rem_minmax(0,_1fr)_1.5rem] [&_.badge]:text-[0.5rem] [&_span:not([class])]:mt-1 [&_span:not([class])]:block [&_span:not([class])]:overflow-hidden [&_span:not([class])]:text-[0.5625rem] [&_span:not([class])]:text-ellipsis [&_span:not([class])]:whitespace-nowrap [&_span:not([class])]:text-admin-ink-faint [&_strong]:block [&_strong]:overflow-hidden [&_strong]:text-[0.6875rem] [&_strong]:font-medium [&_strong]:text-ellipsis [&_strong]:whitespace-nowrap [&_strong]:text-admin-ink-soft [&_time]:text-[0.5625rem] [&_time]:text-admin-ink-faint"
                     >
                       <span className={cn("grid h-7 w-7 place-items-center rounded-lg [&_svg]:w-3.5", eventTone[event.type === "expense" ? "pay" : event.type])}>
                         <Icon />
