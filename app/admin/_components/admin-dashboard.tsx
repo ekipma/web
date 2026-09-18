@@ -1034,7 +1034,7 @@ export function Overview({ overview: initialOverview, adminName, users, total, g
   }
   const activeTrend = overview && overview.previousActiveGroups > 0 ? ((overview.activeGroups - overview.previousActiveGroups) / overview.previousActiveGroups) * 100 : 0;
   const chartMax = Math.max(1, ...(overview?.collaborationChart.map((point) => point.value) ?? [1]));
-  const activityIcons = { expense: CreditCard, turn: CheckCircle2, plan: CalendarDays };
+  const activityIcons = { expense: CreditCard, turn: CheckCircle2, event: CalendarDays };
   return (
     <>
       <PageHeading className="flex">
