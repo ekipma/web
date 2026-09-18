@@ -14,7 +14,9 @@ type EnamadImageProps = React.ImgHTMLAttributes<HTMLImageElement> & {
 };
 
 function EnamadImage(props: EnamadImageProps) {
-  return <img {...props} />;
+  // The authority-hosted badge must remain a plain image element.
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img {...props} alt={props.alt ?? ""} />;
 }
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ locale?: string }> }): Promise<Metadata> {
