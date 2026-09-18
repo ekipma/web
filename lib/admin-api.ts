@@ -83,7 +83,7 @@ export type AdminSystem = {
     disk: { path: string; totalBytes: number; usedBytes: number; usagePercent: number };
   };
 };
-export type AdminAsset = { id: string; name: string; price: number; active: boolean; createdAt: string; updatedAt: string };
+export type AdminAsset = { id: string; slug: string; price: number; active: boolean; createdAt: string; updatedAt: string };
 
 export function adminApiUrl(path: string) {
   return `${apiBaseUrl}/api/v1/admin${path}`;

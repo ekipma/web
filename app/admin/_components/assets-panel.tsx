@@ -19,7 +19,7 @@ function responseMessage(body: unknown, fallback: string) {
 
 export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
   const [assets, setAssets] = useState(initial ?? []);
-  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
   const [price, setPrice] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -50,12 +50,12 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
       const response = await fetch("/api/admin/assets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, price: Number(price), active: true }),
+        body: JSON.stringify({ slug, price: Number(price), active: true }),
       });
       const body: unknown = await response.json();
       if (!response.ok) throw new Error(responseMessage(body, "Could not add asset"));
       setAssets((current) => [...current, body as AdminAsset]);
-      setName("");
+      setSlug("");
       setPrice("");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not add asset");
@@ -92,7 +92,7 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
         <CardHeader className="gap-4 border-b border-admin-line sm:flex-row sm:items-center sm:justify-between">
           <div>
             <CardTitle>Add an asset</CardTitle>
-            <CardDescription>New names need matching bundled visuals in the mobile app.</CardDescription>
+            <CardDescription>New slugs need matching bundled visuals in the mobile app.</CardDescription>
           </div>
           <Badge variant="outline">{assets.length} catalog items</Badge>
         </CardHeader>
@@ -104,7 +104,7 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
               void create();
             }}
           >
-            <Input required pattern="[a-z][a-z0-9_]{0,63}" title="Lowercase letters, numbers, and underscores" placeholder="Asset name, for example neon_frame" value={name} onChange={(event) => setName(event.target.value)} />
+            <Input required pattern="[a-z][a-z0-9_]{0,63}" title="Lowercase letters, numbers, and underscores" placeholder="Asset slug, for example neon_frame" value={slug} onChange={(event) => setSlug(event.target.value)} />
             <Input required min="0" step="1" type="number" placeholder="Price in tokens" value={price} onChange={(event) => setPrice(event.target.value)} />
             <Button disabled={busy} type="submit">
               <PackagePlus /> {busy ? "Adding…" : "Add asset"}
@@ -117,7 +117,7 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
           <table className="w-full min-w-[46rem] text-left text-sm">
             <thead>
               <tr className="border-b border-admin-line text-xs font-medium tracking-wide text-admin-ink-muted uppercase">
-                <th className="px-5 py-3">Asset</th>
+                <th className="px-5 py-3">Slug</th>
                 <th className="px-5 py-3">Catalog ID</th>
                 <th className="px-5 py-3">Token price</th>
                 <th className="px-5 py-3">Availability</th>
@@ -132,14 +132,14 @@ export function AssetsPanel({ initial }: { initial: AdminAsset[] | null }) {
                       <span className="grid size-8 place-items-center rounded-lg bg-admin-violet-soft text-admin-violet">
                         <PackagePlus className="size-4" />
                       </span>
-                      <strong className="font-medium text-admin-ink-soft">{asset.name}</strong>
+                      <strong className="font-medium text-admin-ink-soft">{asset.slug}</strong>
                     </div>
                   </td>
                   <td className="px-5 py-4 font-mono text-xs text-admin-ink-faint">{asset.id}</td>
                   <td className="px-5 py-4">
                     <input
                       key={`${asset.id}:${asset.price}`}
-                      aria-label={`${asset.name} price`}
+                      aria-label={`${asset.slug} price`}
                       type="number"
                       min="0"
                       step="1"
