@@ -15,6 +15,7 @@ export type AdminUser = {
   email: string;
   mobile: string;
   role: number;
+  tokens: number;
   plan: { type: string; expiresAt: string | null };
   photoUrl: string;
 };

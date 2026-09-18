@@ -56,7 +56,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AdminActivityPage, AdminGroup, AdminMembershipPage, AdminOverview, AdminSystem, AdminUser } from "@/lib/admin-api";
 
 type Section = "Overview" | "Users" | "Groups" | "Activity" | "Memberships" | "Assets" | "System" | "Audit log";
-export type User = { id: string; initials: string; name: string; email: string; phone: string; joined: string; plan: "Premium" | "Free"; role: number; status: "Active"; groups: number; color: string };
+export type User = { id: string; initials: string; name: string; email: string; phone: string; joined: string; plan: "Premium" | "Free"; planType: string; expiresAt: string | null; tokens: number; role: number; status: "Active"; groups: number; color: string };
 
 const navigation: { label: Section; href: string; icon: typeof Grid2X2 }[] = [
   { label: "Overview", href: "/admin", icon: Grid2X2 },
@@ -171,6 +171,9 @@ export function toDashboardUser(user: AdminUser, index: number): User {
     phone: user.mobile,
     joined: new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(user.createdAt)),
     plan: user.plan.type === "UserPlanPremium" || user.plan.type === "UserPlanGod" ? "Premium" : "Free",
+    planType: user.plan.type === "UserPlanPremium" ? "premium" : user.plan.type === "UserPlanGod" ? "god" : "normal",
+    expiresAt: user.plan.expiresAt,
+    tokens: user.tokens,
     role: user.role,
     status: "Active",
     groups: 0,
@@ -211,7 +214,24 @@ export function EmptySection({ name }: { name: Section }) {
 
 export function UsersTable({ users, total }: { users: User[]; total: number }) {
   const [query, setQuery] = useState("");
-  const filtered = useMemo(() => users.filter((user) => `${user.name} ${user.phone} ${user.email}`.toLowerCase().includes(query.toLowerCase())), [query, users]);
+  const [rows, setRows] = useState(users);
+  const [pending, setPending] = useState<string | null>(null);
+  const filtered = useMemo(() => rows.filter((user) => `${user.name} ${user.phone} ${user.email}`.toLowerCase().includes(query.toLowerCase())), [query, rows]);
+  async function updateRole(user: User, role: number) {
+    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/role`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ role }) });
+    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, role } : item)); else alert("Unable to update role."); setPending(null);
+  }
+  async function addTokens(user: User) {
+    const value = Number(window.prompt(`Tokens to add for ${user.name}`, "10")); if (!Number.isInteger(value) || value <= 0) return;
+    const reason = window.prompt("Reason for this grant", "Admin adjustment"); if (!reason?.trim()) return;
+    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/tokens`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ amount: value, reason }) });
+    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, tokens: item.tokens + value } : item)); else alert("Unable to add tokens."); setPending(null);
+  }
+  async function updateMembership(user: User, type: string) {
+    const expiresAt = type === "normal" ? null : window.prompt("Expiration (ISO date/time)", user.expiresAt || new Date(Date.now() + 30 * 86400000).toISOString()); if (type !== "normal" && !expiresAt) return;
+    setPending(user.id); const response = await fetch(`/api/admin/users/${user.id}/membership`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type, expiresAt }) });
+    if (response.ok) setRows((current) => current.map((item) => item.id === user.id ? { ...item, planType: type, plan: type === "normal" ? "Free" : "Premium", expiresAt } : item)); else alert("Unable to update membership."); setPending(null);
+  }
   return (
     <section className="grid gap-6">
       <PageHeading>
@@ -241,6 +261,7 @@ export function UsersTable({ users, total }: { users: User[]; total: number }) {
                 <th>Person</th>
                 <th>Membership</th>
                 <th>Role</th>
+                <th>Tokens</th>
                 <th>Joined</th>
                 <th>Status</th>
               </tr>
@@ -257,10 +278,9 @@ export function UsersTable({ users, total }: { users: User[]; total: number }) {
                       </div>
                     </PersonRow>
                   </td>
-                  <td>
-                    <Badge variant={user.plan === "Premium" ? "secondary" : "outline"}>{user.plan}</Badge>
-                  </td>
-                  <td>{user.role === 3 ? "Admin" : user.role === 2 ? "Operator" : "Member"}</td>
+                  <td><select disabled={pending === user.id} value={user.planType} onChange={(event) => updateMembership(user, event.target.value)} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs"><option value="normal">Normal</option><option value="premium">Premium</option><option value="god">God</option></select></td>
+                  <td><select disabled={pending === user.id} value={String(user.role)} onChange={(event) => updateRole(user, Number(event.target.value))} className="rounded border border-admin-line bg-admin-panel px-2 py-1 text-xs"><option value="0">Member</option><option value="2">Operator</option><option value="3">Admin</option></select></td>
+                  <td><button disabled={pending === user.id} onClick={() => addTokens(user)} className="text-admin-violet hover:underline">{user.tokens.toLocaleString()} +</button></td>
                   <td>{user.joined}</td>
                   <td>
                     <Badge variant="success">
