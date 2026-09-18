@@ -62,7 +62,7 @@ export type AdminActivity = {
   assigneeName: string;
   amount?: number;
   turn?: number;
-  dueAt?: string;
+  scheduledAt?: string;
 };
 export type AdminActivityPage = { activity: AdminActivity[]; total: number; offset: number; limit: number };
 export type AdminMembershipPage = { memberships: AdminUser[]; total: number; active: number; expiring: number; expired: number; god: number; offset: number; limit: number };

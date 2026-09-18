@@ -372,7 +372,7 @@ export function GroupsTable({ groups, total }: { groups: AdminGroup[]; total: nu
 function activityDetail(item: AdminActivityPage["activity"][number]) {
   if (item.type === "expense") return item.amount ? `Amount ${item.amount.toLocaleString()}` : "Expense recorded";
   if (item.type === "turn") return `Rotation ${item.turn || 1}`;
-  return item.dueAt ? `Due ${new Date(item.dueAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}` : "Plan created";
+  return item.scheduledAt ? `Due ${new Date(item.scheduledAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}` : "Plan created";
 }
 
 export function ActivityPanel({ initial }: { initial: AdminActivityPage | null }) {
