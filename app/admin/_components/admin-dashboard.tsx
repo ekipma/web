@@ -372,7 +372,7 @@ export function GroupsTable({ groups, total }: { groups: AdminGroup[]; total: nu
 function activityDetail(item: AdminActivityPage["activity"][number]) {
   if (item.type === "expense") return item.amount ? `Amount ${item.amount.toLocaleString()}` : "Expense recorded";
   if (item.type === "turn") return `Rotation ${item.turn || 1}`;
-  return item.scheduledAt ? `Due ${new Date(item.scheduledAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}` : "Plan created";
+  return item.scheduledAt ? `Scheduled ${new Date(item.scheduledAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}` : "Event created";
 }
 
 export function ActivityPanel({ initial }: { initial: AdminActivityPage | null }) {
@@ -386,7 +386,7 @@ export function ActivityPanel({ initial }: { initial: AdminActivityPage | null }
     if (response.ok) setPage(await response.json());
     setPending(false);
   }
-  const icons = { expense: CreditCard, turn: CheckCircle2, plan: CalendarDays };
+  const icons = { expense: CreditCard, turn: CheckCircle2, event: CalendarDays };
   return (
     <section className="grid gap-5">
       <PageHeading>
@@ -404,7 +404,7 @@ export function ActivityPanel({ initial }: { initial: AdminActivityPage | null }
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="expense">Expenses</TabsTrigger>
           <TabsTrigger value="turn">Turns</TabsTrigger>
-          <TabsTrigger value="plan">Plans</TabsTrigger>
+          <TabsTrigger value="event">Events</TabsTrigger>
         </TabsList>
       </Tabs>
       <Card>

@@ -43,15 +43,15 @@ export type AdminOverview = {
   records: number;
   expenses: number;
   turns: number;
-  plans: number;
+  events: number;
   turnGroups: number;
   collaborationChart: { start: string; value: number }[];
-  recentActivity: { id: string; title: string; type: "expense" | "turn" | "plan"; groupId: string; groupName: string; createdAt: string }[];
+  recentActivity: { id: string; title: string; type: "expense" | "turn" | "event"; groupId: string; groupName: string; createdAt: string }[];
 };
 export type AdminActivity = {
   id: string;
   createdAt: string;
-  type: "expense" | "turn" | "plan";
+  type: "expense" | "turn" | "event";
   title: string;
   private: boolean;
   groupId: string;
