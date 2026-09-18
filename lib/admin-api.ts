@@ -83,6 +83,7 @@ export type AdminSystem = {
     disk: { path: string; totalBytes: number; usedBytes: number; usagePercent: number };
   };
 };
+export type AdminAsset = { id: string; name: string; price: number; active: boolean; createdAt: string; updatedAt: string };
 
 export function adminApiUrl(path: string) {
   return `${apiBaseUrl}/api/v1/admin${path}`;
@@ -147,6 +148,40 @@ export async function adminProxy(path: string, fallbackError: string) {
   return response;
 }
 
+export async function adminMutation(request: Request, path: string, method: "POST" | "PATCH", fallbackError: string) {
+  if (request.headers.get("origin") !== new URL(request.url).origin) {
+    return NextResponse.json({ error: "Invalid request origin" }, { status: 403 });
+  }
+  if (!request.headers.get("content-type")?.startsWith("application/json")) {
+    return NextResponse.json({ error: "Expected JSON" }, { status: 415 });
+  }
+  const body: unknown = await request.json().catch(() => null);
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+  const jar = await cookies();
+  let token = jar.get(accessCookie)?.value;
+  let refreshed: AuthPair | null = null;
+  if (!token) {
+    const refreshToken = jar.get(refreshCookie)?.value;
+    refreshed = refreshToken ? await refreshAdminAuth(refreshToken) : null;
+    token = refreshed?.accessToken;
+  }
+  if (!token) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const send = (accessToken: string) => fetch(adminApiUrl(path), { method, headers: { Authorization: `Bearer ${accessToken}`, "X-Version": apiVersion, "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store" }).catch(() => null);
+  let upstream = await send(token);
+  if (upstream?.status === 401 && !refreshed) {
+    const refreshToken = jar.get(refreshCookie)?.value;
+    refreshed = refreshToken ? await refreshAdminAuth(refreshToken) : null;
+    if (refreshed) upstream = await send(refreshed.accessToken);
+  }
+  const data = (await upstream?.json().catch(() => ({ error: fallbackError }))) ?? { error: fallbackError };
+  const response = NextResponse.json(data, { status: upstream?.status ?? 503 });
+  if (refreshed && upstream?.status !== 401) setAdminAuthCookies(response, refreshed);
+  if (upstream?.status === 401) clearAdminAuthCookies(response);
+  return response;
+}
+
 export async function getAdminSession(): Promise<{ user: AdminUser; token: string } | null> {
   const token = (await cookies()).get(accessCookie)?.value;
   if (!token) return null;
@@ -183,4 +218,10 @@ export async function getAdminMemberships(token: string): Promise<AdminMembershi
 export async function getAdminSystem(token: string): Promise<AdminSystem | null> {
   const response = await adminFetch("/system", token);
   return response.ok ? response.json() : null;
+}
+export async function getAdminAssets(token: string): Promise<AdminAsset[] | null> {
+  const response = await adminFetch("/assets", token);
+  if (!response.ok) return null;
+  const data = (await response.json()) as { assets: AdminAsset[] };
+  return data.assets;
 }
