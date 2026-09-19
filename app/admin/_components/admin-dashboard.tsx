@@ -80,6 +80,7 @@ const avatarTone = {
 const eventTone = {
   pay: "bg-admin-rose-soft text-admin-rose",
   turn: "bg-admin-cyan-soft text-admin-cyan",
+  event: "bg-admin-violet-soft text-admin-violet",
   plan: "bg-admin-green-soft text-admin-green",
   neutral: "bg-admin-violet-soft text-admin-violet",
 } as const;
