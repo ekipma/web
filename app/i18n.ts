@@ -22,7 +22,7 @@ export const messages = {
     faq: { label: "A FEW THINGS TO KNOW", title: "Good questions.", items: [["Is Ekipma just for roommates?", "It’s made for people who share things. Roommates and dorm friends are right at home, but you can also use it with your regular dinner crew, travel buddies, or any group planning life together."], ["How do shared expenses work?", "Add what you paid, choose the people sharing it, and Ekipma divides the total equally. Keep track of who owes what, record repayments, and confirm when you’ve settled up."], ["What can we take turns doing?", "Anything your group rotates: washing the dishes, cleaning the kitchen, or making the next grocery run. Set the order and period, then mark a turn done to move to the next person."], ["What goes into a plan?", "Give it a name, choose your people, and add the date and place. From a study session to a weekend hangout, the details stay together."]] },
     download: { eyebrow: "FOR THE PEOPLE YOU DO LIFE WITH", title: ["Make room for", "the good stuff."], copy: "Your expenses, turns, and plans. Finally, together.", apk: "Already on Android? Download the APK", footnote: "Small app. A little more harmony." },
     contact: { title: "Something bigger in mind?", copy: "Let’s find out how Ekipma could fit your company or community.", cta: "Contact us", pending: "Company inquiries open soon." },
-    footer: "A little less admin. A lot more us.", store: { download: "Download on", soon: "Coming soon to" },
+    footer: "A little less admin. A lot more us.", store: { download: "Download on", soon: "Coming soon to", pwa: "Open web app" },
   },
   fa: {
     skip: "رفتن به محتوا", language: "English", languageLabel: "تغییر زبان به انگلیسی",
@@ -40,6 +40,6 @@ export const messages = {
     faq: { label: "شاید سؤال تو هم باشه", title: "سؤالی داری؟", items: [["اکیپما فقط برای هم‌خونه‌هاست؟", "نه! هر جا یه اکیپ هست، اکیپما هم به کار میاد؛ از هم‌خونه‌ها و بچه‌های خوابگاه گرفته تا رفیق‌های سفر و دورهمی‌های آخر هفته."], ["خرج‌ها چطوری تقسیم می‌شن؟", "مبلغی که دادی رو وارد کن و بگو کیا توی این خرج شریک بودن. اکیپما مبلغ رو مساوی تقسیم می‌کنه تا سهم هر نفر مشخص باشه. بعد هم می‌تونید تسویه‌ها رو ثبت و تأیید کنید."], ["چه کارهایی رو می‌شه نوبتی کرد؟", "از ظرف شستن و تمیزکاری تا خرید خونه. آدم‌ها، ترتیب و فاصله نوبت‌ها رو مشخص کن. هر کس کارش رو انجام داد، نوبت می‌رسه به نفر بعد."], ["چطوری یه قرار بذاریم؟", "یه اسم براش بذار، دوستات رو انتخاب کن و زمان و مکانش رو بنویس. از درس خوندن با هم تا دورهمی آخر هفته، جزئیات قرار دیگه لابه‌لای پیام‌ها گم نمی‌شه."]] },
     download: { eyebrow: "برای تو و رفیق‌های هر روزت", title: ["کمتر هماهنگ کن،", "بیشتر خوش بگذرون."], copy: "خرج‌ها، نوبت‌ها و قرارهای اکیپت، همه یه‌جا.", apk: "اندروید داری؟ مستقیم دانلود کن", footnote: "یه اپ کوچیک، یه اکیپ هماهنگ‌تر." },
     contact: { title: "برای تیمتون اکیپما می‌خواید؟", copy: "از نیازهای تیمتون بگید تا با هم ببینیم اکیپما چطور می‌تونه کمکتون کنه.", cta: "تماس با ما", pending: "پاسخ‌گویی به درخواست‌های سازمانی به‌زودی آغاز می‌شود." },
-    footer: "دردسر کمتر، رفاقت بیشتر.", store: { download: "دریافت از", soon: "به‌زودی در" },
+    footer: "دردسر کمتر، رفاقت بیشتر.", store: { download: "دریافت از", soon: "به‌زودی در", pwa: "باز کردن وب‌اپ" },
   },
 } as const;

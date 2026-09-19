@@ -31,14 +31,15 @@ function StoreLinks({ locale }: { locale: Locale }) {
   const copy = messages[locale];
   return (
     <div className="store-links mt-7.5 flex justify-center gap-3 max-mobile:gap-[9px]">
-      {(["googlePlay", "appStore"] as const).map((store) => {
+      {(["googlePlay", "pwa"] as const).map((store) => {
         const href = site[store];
+        const label = store === "googlePlay" ? "Google Play" : copy.store.pwa;
         const content = (
           <>
-            <Icon name={store === "googlePlay" ? "play" : "apple"} />
+            <Icon name={store === "googlePlay" ? "play" : "external"} />
             <span>
               <small>{href ? copy.store.download : copy.store.soon}</small>
-              <strong>{store === "googlePlay" ? "Google Play" : "App Store"}</strong>
+              <strong>{label}</strong>
             </span>
           </>
         );
@@ -50,7 +51,7 @@ function StoreLinks({ locale }: { locale: Locale }) {
           <div
             key={store}
             className="store-button unavailable flex min-w-[169px] items-center gap-3 rounded-[8px] border border-[#3d3d45] bg-[#151519] px-5 py-[11px] text-left max-mobile:min-w-0 max-mobile:gap-[9px] max-mobile:px-[13px] max-mobile:py-2.5 max-small:p-2.5"
-            aria-label={`${store === "googlePlay" ? "Google Play" : "App Store"}: coming soon`}
+            aria-label={`${label}: coming soon`}
           >
             {content}
           </div>
