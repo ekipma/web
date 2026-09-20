@@ -55,7 +55,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { AdminActivityPage, AdminGroup, AdminMembershipPage, AdminOverview, AdminSystem, AdminUser } from "@/lib/admin-api";
 
-type Section = "Overview" | "Users" | "Groups" | "Activity" | "Memberships" | "Assets" | "System" | "Audit log";
+type Section = "Overview" | "Users" | "Groups" | "Activity" | "Memberships" | "Assets" | "App releases" | "System" | "Audit log";
 export type User = { id: string; initials: string; name: string; email: string; phone: string; joined: string; plan: "Premium" | "Free"; planType: string; expiresAt: string | null; tokens: number; role: number; status: "Active"; groups: number; color: string };
 
 const navigation: { label: Section; href: string; icon: typeof Grid2X2 }[] = [
@@ -65,6 +65,7 @@ const navigation: { label: Section; href: string; icon: typeof Grid2X2 }[] = [
   { label: "Activity", href: "/admin/activity", icon: Activity },
   { label: "Memberships", href: "/admin/memberships", icon: Gem },
   { label: "Assets", href: "/admin/assets", icon: ShoppingBag },
+  { label: "App releases", href: "/admin/releases", icon: Download },
   { label: "System", href: "/admin/system", icon: Gauge },
   { label: "Audit log", href: "/admin/audit", icon: ShieldCheck },
 ];
@@ -191,6 +192,7 @@ export function EmptySection({ name }: { name: Section }) {
     Groups: "Search and inspect groups, their memberships, visibility, and activity once the admin API is connected.",
     Activity: "Review logical expense, turn, and plan activity without exposing or changing private record details by default.",
     Memberships: "Manage access history and upcoming Premium expiry once entitlement provenance is stored by the backend.",
+    "App releases": "Upload and publish the Android APK for the website.",
     Assets: "Manage sellable assets, prices, and availability from the catalog.",
     System: "Show API and database readiness, client-version rules, and request-ID diagnostics from live operational sources.",
     "Audit log": "Every future administrative read and change will appear here with actor, target, reason, outcome, and time.",

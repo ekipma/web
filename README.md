@@ -34,3 +34,18 @@ If your environment restricts the local worker ports required by Turbopack, the 
 **Before publishing, complete [LAUNCH-TODO.md](./LAUNCH-TODO.md).** Store URLs, contact email, and monthly price intentionally remain empty placeholders. The page shows availability labels until they are filled. Illustrative demo actions are local to the page; there is no app/backend mutation, signup, checkout, or tracking integration.
 
 No new runtime dependencies were added for this landing.
+
+### Publishing Android releases
+
+Sign in as an admin and open **App releases** (`/admin/releases`). Enter the build
+version, choose a signed `.apk` (up to 200 MiB), then select **Upload and publish**.
+The screen shows upload progress and the current release's version, size, date,
+and download link. If publication times out, refresh the current release before
+retrying; it may already have succeeded.
+
+The website's Android link points to
+`https://cdn.ekipma.ir/downloads/android/ekipma.apk`. Deploy the server release API,
+MinIO bucket initialization, and Nginx routes alongside this web update (see the
+server README). Uploads go directly to MinIO using temporary signed forms; storage
+credentials are never exposed to the browser. The existing `EKIPMA_API_URL` setting
+is used for authenticated release API calls.

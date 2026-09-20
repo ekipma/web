@@ -6,5 +6,5 @@ export const site = {
   pwa: "https://app.ekipma.ir",
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "",
   premiumPrice: process.env.NEXT_PUBLIC_PREMIUM_PRICE || "",
-  androidApk: "https://cdn.ekipma.ir/files/ekipma.apk",
+  androidApk: "https://cdn.ekipma.ir/downloads/android/ekipma.apk",
 };
