@@ -22,3 +22,11 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Preserve the existing inclusive responsive boundaries with `min-wide`, `max-tablet`, `max-admin-tablet`, `max-mobile`, and `max-small`. Check mobile, desktop, and Persian RTL behavior when migrating styles.
 - Preserve appearance and behavior while migrating, but prefer Tailwind's built-in spacing, radius, typography, and sizing scale. Use arbitrary values only for true custom geometry, effects, or design tokens; prefer rem-based arbitrary values over hard-coded pixel values when a nonstandard size is unavoidable. Promote values shared across components into theme tokens.
 - Run `npm run format -- <changed files>` to format JSX/CSS and sort utilities with the Tailwind Prettier plugin; verify with `npm run format:check -- <changed files>`, lint, and TypeScript.
+
+### Admin UI and shadcn/ui
+
+- All admin UI MUST use shadcn/ui components and patterns.
+- Leverage the existing components in `components/ui` as much as possible before creating new UI primitives or bespoke equivalents.
+- When a needed primitive is not present, add the appropriate shadcn/ui component and compose it into the admin screen rather than building a one-off replacement.
+- Use shadcn/ui for admin controls, forms, dialogs, menus, navigation, feedback, data display, and layout primitives wherever an applicable component exists.
+- Custom admin components should compose shadcn/ui primitives and preserve their accessibility, variants, and interaction behavior; do not bypass them with ad hoc HTML/CSS implementations without a documented reason.
