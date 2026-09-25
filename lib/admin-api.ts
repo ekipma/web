@@ -94,8 +94,9 @@ function authApiUrl(path: string) {
   return `${apiBaseUrl}/api/v1/auth${path}`;
 }
 
-export async function adminFetch(path: string, token: string) {
+export async function adminFetch(path: string, token: string, signal?: AbortSignal) {
   return fetch(adminApiUrl(path), {
+    signal,
     headers: { Authorization: `Bearer ${token}`, "X-Version": apiVersion },
     cache: "no-store",
   });

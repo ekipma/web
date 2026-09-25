@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import { LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { AdminGoogleLogin } from "./admin-google-login";
 
-export function AdminLogin() {
+export function AdminLogin({ googleClientId = "" }: { googleClientId?: string }) {
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -16,10 +17,17 @@ export function AdminLogin() {
     setError("");
     setPending(true);
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mobile: form.get("mobile"), password: form.get("password") }) });
-    if (response.ok) router.replace("/admin");
-    else setError((await response.json().catch(() => ({ error: "Unable to sign in." }))).error);
-    setPending(false);
+    try {
+      const response = await fetch("/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ mobile: form.get("mobile"), password: form.get("password") }), signal: AbortSignal.timeout(15_000) });
+      if (response.ok) {
+        router.replace("/admin");
+        router.refresh();
+      } else setError((await response.json().catch(() => ({ error: "Unable to sign in." }))).error);
+    } catch {
+      setError("Unable to reach the sign-in service. Please try again.");
+    } finally {
+      setPending(false);
+    }
   }
   return (
     <main className="grid min-h-screen place-items-center bg-background bg-[radial-gradient(circle_at_50%_0,#a18fff18,transparent_36%)] p-6">
@@ -57,6 +65,7 @@ export function AdminLogin() {
             </>
           )}
         </Button>
+        {googleClientId && <AdminGoogleLogin clientId={googleClientId} pending={pending} onPendingChange={setPending} onError={setError} />}
       </form>
     </main>
   );
