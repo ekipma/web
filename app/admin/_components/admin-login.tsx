@@ -71,8 +71,10 @@ export function AdminLogin({ googleClientId = "", appleEnabled = false, initialE
           or
           <span className="h-px flex-1 bg-border" />
         </div>
-        {googleClientId && <AdminGoogleLogin clientId={googleClientId} pending={pending} onPendingChange={setPending} onError={setError} />}
-        <AdminAppleLogin enabled={appleEnabled} pending={pending} onPendingChange={setPending} onError={setError} />
+        <div className="mx-auto grid w-full max-w-80 gap-3" dir="ltr">
+          {googleClientId && <AdminGoogleLogin clientId={googleClientId} pending={pending} onPendingChange={setPending} onError={setError} />}
+          <AdminAppleLogin enabled={appleEnabled} pending={pending} onPendingChange={setPending} onError={setError} />
+        </div>
       </form>
     </main>
   );

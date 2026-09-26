@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { AdminOAuthButton } from "./admin-oauth-button";
 
 type GoogleIdentity = {
   initialize(options: { client_id: string; nonce: string; callback: (response: { credential: string }) => void; ux_mode: "popup"; auto_select: boolean }): void;
-  renderButton(element: HTMLElement, options: { type: "standard"; theme: "outline"; size: "large"; text: "signin_with"; shape: "rectangular"; locale: "en"; width: number }): void;
+  renderButton(element: HTMLElement, options: { type: "standard"; theme: "outline"; size: "large"; text: "signin_with"; shape: "rectangular"; locale: "en"; logo_alignment: "left"; width: number }): void;
 };
 
 type Props = { clientId: string; pending: boolean; onPendingChange: (pending: boolean) => void; onError: (message: string) => void };
@@ -24,6 +24,25 @@ export function AdminGoogleLogin({ clientId, pending, onPendingChange, onError }
   }, [pending]);
   const expiry = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [status, setStatus] = useState<"loading" | "ready" | "retry" | "script-error">("loading");
+
+  // GIS takes a pixel width; keep it aligned with the shared responsive column.
+  useEffect(() => {
+    const element = container.current;
+    const parent = element?.parentElement;
+    if (status !== "ready" || !element || !parent) return;
+    let previousWidth = Math.min(320, parent.clientWidth);
+    const observer = new ResizeObserver(() => {
+      const width = Math.min(320, parent.clientWidth);
+      if (!width || width === previousWidth) return;
+      previousWidth = width;
+      const identity = (window as Window & { google?: { accounts?: { id?: GoogleIdentity } } }).google?.accounts?.id;
+      if (!identity) return;
+      element.replaceChildren();
+      identity.renderButton(element, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "rectangular", locale: "en", logo_alignment: "left", width });
+    });
+    observer.observe(parent);
+    return () => observer.disconnect();
+  }, [status]);
 
   useEffect(() => {
     mounted.current = true;
@@ -86,7 +105,7 @@ export function AdminGoogleLogin({ clientId, pending, onPendingChange, onError }
         auto_select: false,
       });
       container.current.replaceChildren();
-      identity.renderButton(container.current, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "rectangular", locale: "en", width: Math.min(320, container.current.parentElement?.clientWidth || 250) });
+      identity.renderButton(container.current, { type: "standard", theme: "outline", size: "large", text: "signin_with", shape: "rectangular", locale: "en", logo_alignment: "left", width: Math.min(320, container.current.parentElement?.clientWidth || 250) });
       setStatus("ready");
       expiry.current = setTimeout(() => {
         if (mounted.current) setStatus("retry");
@@ -114,24 +133,13 @@ export function AdminGoogleLogin({ clientId, pending, onPendingChange, onError }
         }}
       />
       {/* GIS renders its official accessible, branded button. This provider-owned
-          control is the exception to our shadcn primitives; retry uses Button. */}
+          control is the exception to our shadcn primitives; loading and retry share Apple’s button styling. */}
       <div ref={container} className={status === "ready" ? "flex min-h-10 justify-center" : "hidden"} inert={pending || status !== "ready"} />
-      {status === "loading" && (
-        <p role="status" className="text-center text-xs text-admin-ink-muted">
-          Loading Google sign-in…
-        </p>
-      )}
+      {status === "loading" && <AdminOAuthButton provider="google" disabled aria-busy="true" />}
       {status === "retry" && (
-        <Button
-          type="button"
-          variant="outline"
-          disabled={pending}
-          onClick={() => {
-            void prepare();
-          }}
-        >
-          Restart Google sign-in
-        </Button>
+        <AdminOAuthButton provider="google" disabled={pending} onClick={() => void prepare()}>
+          Retry Google sign-in
+        </AdminOAuthButton>
       )}
       {status === "script-error" && (
         <p role="status" className="text-xs text-admin-ink-muted">

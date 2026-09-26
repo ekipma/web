@@ -30,6 +30,9 @@ html:lang(fa) .demo-caption {
   gap: 12px;
 }
 @theme inline {
+  --color-oauth-border: #747775;
+  --color-oauth-ink: #1f1f1f;
+  --color-oauth-hover: #f8faff;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-site-muted: var(--muted);

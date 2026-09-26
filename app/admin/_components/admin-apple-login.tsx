@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { AdminOAuthButton } from "./admin-oauth-button";
 
 export function AdminAppleLogin({ enabled, pending, onPendingChange, onError }: { enabled: boolean; pending: boolean; onPendingChange: (pending: boolean) => void; onError: (message: string) => void }) {
   const busy = useRef(false);
@@ -32,8 +32,13 @@ export function AdminAppleLogin({ enabled, pending, onPendingChange, onError }: 
     }
   }
   return (
-    <Button className="h-10" type="button" variant="outline" disabled={!enabled || pending} onClick={() => void signIn()}>
-      Sign in with Apple {!enabled && <span className="text-xs">(Coming soon)</span>}
-    </Button>
+    <div className="grid gap-2">
+      <AdminOAuthButton provider="apple" disabled={!enabled || pending} aria-describedby={!enabled ? "apple-sign-in-availability" : undefined} onClick={() => void signIn()} />
+      {!enabled && (
+        <p id="apple-sign-in-availability" className="text-center text-xs text-admin-ink-muted">
+          Coming soon
+        </p>
+      )}
+    </div>
   );
 }
