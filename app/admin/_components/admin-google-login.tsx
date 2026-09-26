@@ -70,7 +70,6 @@ export function AdminGoogleLogin({ clientId, pending, onPendingChange, onError }
     }
     preparing.current = true;
     setStatus("loading");
-    onError("");
     if (expiry.current) clearTimeout(expiry.current);
     try {
       const response = await fetch("/api/admin/oauth/google/challenge", { method: "POST", signal: AbortSignal.timeout(15_000) });
@@ -114,11 +113,6 @@ export function AdminGoogleLogin({ clientId, pending, onPendingChange, onError }
           setStatus("script-error");
         }}
       />
-      <div className="flex items-center gap-3 text-xs text-admin-ink-muted">
-        <span className="h-px flex-1 bg-border" />
-        or
-        <span className="h-px flex-1 bg-border" />
-      </div>
       {/* GIS renders its official accessible, branded button. This provider-owned
           control is the exception to our shadcn primitives; retry uses Button. */}
       <div ref={container} className={status === "ready" ? "flex min-h-10 justify-center" : "hidden"} inert={pending || status !== "ready"} />

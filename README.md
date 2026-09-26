@@ -74,8 +74,7 @@ Google Identity Services renders its official button as an exception to the admi
 shadcn primitives, preserving provider branding and accessible interaction.
 
 The **Go server** must have its OAuth migration applied and this same Web client ID
-in `GOOGLE_OAUTH_CLIENT_IDS`. Google/Apple are independent providers; this admin UI
-currently enables Google only. Apple web integration is not configured here.
+in `GOOGLE_OAUTH_CLIENT_IDS`. Google and Apple are independent providers.
 
 The browser requests a challenge through `/api/admin/oauth/google/challenge`.
 The web server binds it to a five-minute HttpOnly, SameSite=Strict cookie. The
@@ -93,3 +92,47 @@ sign-in. Keep an existing phone/password administrator available for this step.
 Run `npm test` for the OAuth route security checks, then `npm run lint`,
 `npx tsc --noEmit`, and `npm run build`. Tests mock the upstream API and use fake
 tokens; real Google sign-in still requires the registered origin and provider setup.
+
+## Apple sign-in for administrators
+
+The Apple button remains disabled with “Coming soon” until both web variables are
+set. No Apple requests are made until the button is clicked. Add these runtime
+values to the **web deployment**, replacing the example Services ID:
+
+```dotenv
+APPLE_OAUTH_WEB_CLIENT_ID=ir.ekipma.admin
+APPLE_OAUTH_REDIRECT_URI=https://ekipma.ir/api/admin/oauth/apple/callback
+```
+
+In the **Go server deployment**, include the same Services ID in the existing
+comma-separated allowlist (preserve any other client IDs):
+
+```dotenv
+APPLE_OAUTH_CLIENT_IDS=ir.ekipma.admin
+```
+
+Restart both services after setting their variables. `ir.ekipma.admin` is only an
+example: you must register your actual Services ID in Apple Developer, enable
+Sign in with Apple, associate it with a primary App ID that has the capability,
+and register `ekipma.ir` and the exact HTTPS return URL above. See
+[Apple’s web configuration instructions](https://developer.apple.com/help/account/capabilities/configure-sign-in-with-apple-for-the-web).
+Use the admin panel on that exact origin. Local testing needs a registered HTTPS
+domain; an HTTP localhost URL will not work with this flow.
+
+Clicking the button requests a five-minute backend nonce and redirects to Apple.
+Apple POSTs the result to the callback. A Secure, HttpOnly, SameSite=None,
+host-only cookie binds the state and nonce to the initiating browser; ingress
+must preserve the POST body and cookies. The callback checks state, nonce and
+Web audience, forwards the ID token to the Go server for cryptographic validation
+and single-use nonce consumption, and checks administrator access before setting
+session cookies. Return URLs are fixed by configuration; tokens never go into URLs.
+
+This implements ID-token sign-in only: the returned authorization code is not
+exchanged or stored, so no Apple client secret or private key is required. It does
+not obtain Apple refresh tokens or implement Apple token revocation. Apple's
+optional first-login name is used only as display text; email comes from the
+verified token. Existing accounts are not linked by email, and first Apple login
+creates an ordinary account that an existing admin must grant access to.
+
+`npm test` covers the callback and failure paths with mocked upstream responses.
+A real end-to-end Apple login still requires your Apple Developer configuration.

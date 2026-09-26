@@ -7,10 +7,11 @@ import { LockKeyhole } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AdminGoogleLogin } from "./admin-google-login";
+import { AdminAppleLogin } from "./admin-apple-login";
 
-export function AdminLogin({ googleClientId = "" }: { googleClientId?: string }) {
+export function AdminLogin({ googleClientId = "", appleEnabled = false, initialError = "" }: { googleClientId?: string; appleEnabled?: boolean; initialError?: string }) {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [error, setError] = useState(initialError);
   const [pending, setPending] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -65,7 +66,13 @@ export function AdminLogin({ googleClientId = "" }: { googleClientId?: string })
             </>
           )}
         </Button>
+        <div className="flex items-center gap-3 text-xs text-admin-ink-muted">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
         {googleClientId && <AdminGoogleLogin clientId={googleClientId} pending={pending} onPendingChange={setPending} onError={setError} />}
+        <AdminAppleLogin enabled={appleEnabled} pending={pending} onPendingChange={setPending} onError={setError} />
       </form>
     </main>
   );
